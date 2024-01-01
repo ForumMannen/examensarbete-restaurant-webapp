@@ -1,0 +1,9 @@
+//Skapa Admin användare
+POST http://localhost:3000/api/admin/register
+Content-Type: application/json
+
+{
+    "email": "admin@test.se",
+    "password": "admin",
+    "isAdmin": true
+}
