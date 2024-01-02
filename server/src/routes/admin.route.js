@@ -1,10 +1,13 @@
 const express = require("express");
-const { register, login } = require("../controllers/admin.controller");
+const { register, login, logout, seeSecret } = require("../controllers/admin.controller");
 const { AdminCreateValidationSchema } = require("../models/admin.model");
+const { validate, isLoggedIn } = require("../middlewares");
 
 const adminRouter = express
     .Router()
-    .post("/admin/register", register)
-    .post("/admin/login", login);
+    .post("/admin/register", validate(AdminCreateValidationSchema), register)
+    .post("/admin/login", login)
+    .post("/admin/logout", logout)
+    .get("/admin/seeSecret", isLoggedIn, seeSecret);
 
 module.exports = { adminRouter };

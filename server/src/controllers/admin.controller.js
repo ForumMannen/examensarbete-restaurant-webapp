@@ -1,4 +1,5 @@
 const { AdminModel } = require("../models/admin.model");
+const bcrypt = require("bcrypt");
 
 async function register(req, res) {
     //Check if the Admin already exists
@@ -9,7 +10,7 @@ async function register(req, res) {
 
     //If Admin doesn't exists create one
     const admin = new AdminModel(req.body);
-    //Don't hash for now, check more about OAuth
+    admin.password = await bcrypt.hash(admin.password, 10);
     await admin.save();
 
     const jsonAdmin = admin.toJSON();
@@ -25,8 +26,8 @@ async function login(req, res) {
         email: req.body.email,
     }).select("+password");
 
-    //Add more checks for password aswell later
-    if (!existingAdmin) {
+    //Check if email and password is correct
+    if (!existingAdmin || !(await bcrypt.compare(req.body.password, existingAdmin.password))) {
         return res.status(401).json("Wrong email or password!");
     }
 
@@ -34,14 +35,23 @@ async function login(req, res) {
     const admin = existingAdmin.toJSON();
     admin._id = existingAdmin._id;
     delete admin.password;
-
     //Check if admin already is logged in
     if (req.session._id) {
         return res.status(200).json(admin);
     }
     //Save admin to session
-    req.session = admin;
     res.status(200).json(admin);
 }
 
-module.exports = { register, login };
+async function logout(req, res) {
+    if (req.session._id) {
+        await req.session.destroy();
+    }
+    res.status(200).send();
+}
+
+async function seeSecret(req, res) {
+    res.status(200).send();
+}
+
+module.exports = { register, login, logout, seeSecret };
