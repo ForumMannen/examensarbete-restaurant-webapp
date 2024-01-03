@@ -40,7 +40,7 @@ async function login(req, res) {
         return res.status(200).json(admin);
     }
     //Save admin to session
-    res.status(200).json(admin);
+    res.sendStatus(200);
 }
 
 async function logout(req, res) {
