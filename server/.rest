@@ -1,5 +1,5 @@
 //Skapa Admin användare
-POST http://localhost:3000/api/admin/register
+POST http://localhost:3000/admin/register
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 ###
 
 // Logga in Admin
-POST http://localhost:3000/api/admin/login
+POST http://localhost:3000/admin/login
 Content-Type: application/json
 
 {
@@ -21,8 +21,8 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3000/api/admin/logout
+POST http://localhost:3000/admin/logout
 
 ###
 
-GET http://localhost:3000/api/admin/seeSecret
+GET http://localhost:3000/admin/seeSecret
