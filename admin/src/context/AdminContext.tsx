@@ -1,4 +1,4 @@
-import { PropsWithChildren, createContext, useContext, useState } from "react";
+import { PropsWithChildren, createContext, useContext, useState, Dispatch, SetStateAction } from "react";
 
 interface Credentials {
     email: string;
@@ -7,12 +7,16 @@ interface Credentials {
 
 interface AdminContext {
     loginAdmin: boolean | null;
+    setLoginAdmin: Dispatch<SetStateAction<boolean | null>>;
     fetchAdmin: (admin: Credentials) => Promise<string | void>;
+    logoutAdmin: () => Promise<string | void>;
 }
 
 const AdminContext = createContext<AdminContext>({
     loginAdmin: null,
-    fetchAdmin: async () => Promise.resolve()
+    setLoginAdmin: () => {},
+    fetchAdmin: async () => Promise.resolve(),
+    logoutAdmin: () => Promise.resolve(),
 })
 
 export const useAdminContext = () => useContext(AdminContext);
@@ -41,8 +45,30 @@ const AdminProvider = ({ children }: PropsWithChildren<object>) => {
           }
     }
 
+    async function logoutAdmin(){
+      try {
+        const response = await fetch("/api/admin/logout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          }, 
+          body: JSON.stringify({}),
+        });
+
+        if(response.status === 200){
+          setLoginAdmin(false);
+        } else {
+          const data = await response.json();
+          return data
+        }
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+
     return (
-        <AdminContext.Provider value={{ loginAdmin, fetchAdmin }}>
+        <AdminContext.Provider value={{ loginAdmin, setLoginAdmin, fetchAdmin, logoutAdmin }}>
             {children}
         </AdminContext.Provider>
     )
