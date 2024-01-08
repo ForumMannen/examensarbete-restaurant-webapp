@@ -47,7 +47,7 @@ async function logout(req, res) {
     if (req.session._id) {
         await req.session.destroy();
     }
-    res.status(200).send();
+    res.sendStatus(200);
 }
 
 async function seeSecret(req, res) {

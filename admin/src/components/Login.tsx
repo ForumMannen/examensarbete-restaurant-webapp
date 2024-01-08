@@ -1,43 +1,29 @@
-import { useState } from "react"
+import { useState } from "react";
+import { useAdminContext } from "../context/AdminContext";
+import {  Navigate } from "react-router-dom";
 
-interface LoginProps {
-  onLoginSuccess: () => void;
-}
+function Login(){
+  const { fetchAdmin, loginAdmin } = useAdminContext();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-function Login({ onLoginSuccess }: LoginProps) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const handleLogin = async () => {
     try {
-      const response = await fetch ("/api/admin/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({email, password}),
-      })
-
-      if(response.ok){
-        // const data = await response.json();
-        onLoginSuccess();
-        console.log("Logged in!")
-      } else {
-        console.error("Login failed");
-        
-      }
+      await fetchAdmin({ email, password });
     } catch (error) {
-      console.error("Error: ", error)
+      console.error('Login failed:', error);
     }
   }
+
   return (
-    <form onSubmit={(e) => {
-      e.preventDefault();
-      handleLogin();
-    }}>
+    <form onSubmit={handleSubmit}>
         <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}/>
         <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
         <button type="submit">Logga in</button>
+        {loginAdmin === true && <Navigate to="/dashboard"/>}
+        {loginAdmin === false && <p>Login failed!</p>}
     </form>
   )
 }

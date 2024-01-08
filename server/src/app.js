@@ -9,7 +9,8 @@ app.use(
         resave: false,
         saveUninitialized: true,
         // Set to HTTPS if it's live
-        // cookie: { secure: true }
+        cookie: { secure: false },
+        credentials: true,
     })
 )
 
