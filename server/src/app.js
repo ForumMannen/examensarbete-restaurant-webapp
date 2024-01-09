@@ -16,8 +16,10 @@ app.use(
 
 //Import routers
 const { adminRouter } = require("./routes/admin.route");
+const { recipeRouter } = require("./routes/recipe.route");
 
 //Add routers
-app.use("/api", adminRouter);
+app.use("/api/admin", adminRouter);
+app.use("/api/dashboard", recipeRouter);
 
 module.exports = { app };

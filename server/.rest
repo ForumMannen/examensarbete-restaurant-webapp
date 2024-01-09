@@ -11,7 +11,7 @@ Content-Type: application/json
 ###
 
 // Logga in Admin
-POST http://localhost:3000/admin/login
+POST http://localhost:3000/api/admin/login
 Content-Type: application/json
 
 {
@@ -21,8 +21,75 @@ Content-Type: application/json
 
 ###
 
+//Logga ut Admin
 POST http://localhost:3000/admin/logout
 
 ###
 
+//Lås till enbart Admin
 GET http://localhost:3000/admin/seeSecret
+
+###
+
+//Hämta alla recept, produkter
+GET http://localhost:3000/api/dashboard/recipe
+
+###
+
+//Lägg till modifiers(ingredienser)
+POST http://localhost:3000/api/dashboard/modifiers
+Content-Type: application/json
+
+{
+    "name": "Skinka"
+}
+
+###
+
+//Lägg till toppings(sås, topping etc)
+POST http://localhost:3000/api/dashboard/toppings
+Content-Type: application/json
+
+{
+    "name": "Svag sås"
+}
+
+###
+
+//Lägg till toppings(sås, topping etc)
+POST http://localhost:3000/api/dashboard/recipe
+Content-Type: application/json
+
+{
+    "name": "I think this is working",
+    "modifiers": [
+        {
+            "name": "Tomatsås"
+        },
+        {
+            "name": "Ost"
+        },
+        {
+            "name": "Ananas"
+        }
+    ],
+    "toppings": []
+}
+
+###
+
+//Lägg till dricka
+POST http://localhost:3000/api/dashboard/drinks
+Content-Type: application/json
+
+{
+    "name": "Coca-Cola",
+    "volume": 0.33,
+    "description": "Original taste",
+    "price": 20
+}
+
+###
+
+//Hämta alla drickor
+GET http://localhost:3000/api/dashboard/drinks

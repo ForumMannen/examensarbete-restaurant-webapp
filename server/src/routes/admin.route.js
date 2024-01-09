@@ -5,9 +5,9 @@ const { validate, isLoggedIn } = require("../middlewares");
 
 const adminRouter = express
     .Router()
-    .post("/admin/register", validate(AdminCreateValidationSchema), register)
-    .post("/admin/login", login)
-    .post("/admin/logout", logout)
-    .get("/admin/seeSecret", isLoggedIn, seeSecret);
+    .post("/register", validate(AdminCreateValidationSchema), register)
+    .post("/login", login)
+    .post("/logout", logout)
+    .get("/seeSecret", isLoggedIn, seeSecret);
 
 module.exports = { adminRouter };
