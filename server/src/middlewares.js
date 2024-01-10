@@ -54,9 +54,21 @@ async function createTopping(req, res, next) {
     }
 }
 
+const deleteItem = (Model) => async (req, res) => {
+    try {
+        const item = await Model.findOneAndDelete({ _id: req.params.id });
+        if (!item) {
+            return res.status(404).send("Item not found")
+        }
+        res.sendStatus(204);
+    } catch (error) {
+        res.status(500).send("Error deleting item");
+    }
+}
+
 function isLoggedIn(req, res, next) {
     if (!req.session._id) return res.status(401).send();
     return next();
 }
 
-module.exports = { validate, isLoggedIn, createModifier, createTopping };
+module.exports = { validate, isLoggedIn, createModifier, createTopping, deleteItem };

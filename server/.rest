@@ -32,7 +32,7 @@ GET http://localhost:3000/admin/seeSecret
 ###
 
 //Hämta alla recept, produkter
-GET http://localhost:3000/api/dashboard/recipe
+GET http://localhost:3000/api/dashboard/recipe/all
 
 ###
 
@@ -93,3 +93,23 @@ Content-Type: application/json
 
 //Hämta alla drickor
 GET http://localhost:3000/api/dashboard/drinks
+
+###
+
+//Radera recipe
+DELETE http://localhost:3000/api/dashboard/recipe/659d25f9d6bedfa269216e5f
+
+###
+
+//Radera modifiers
+DELETE http://localhost:3000/api/dashboard/modifiers/659d25f9d6bedfa269216e5f
+
+###
+
+//Radera toppings
+DELETE http://localhost:3000/api/dashboard/toppings/659d02c1ccaaaf183de7422c
+
+###
+
+//Radera drinks
+DELETE http://localhost:3000/api/dashboard/drinks/659dac7f7ce59c741ccef054
