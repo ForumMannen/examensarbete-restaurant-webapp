@@ -1,5 +1,4 @@
 import { PropsWithChildren, createContext, useContext, useState, Dispatch, SetStateAction } from "react";
-
 interface Credentials {
     email: string;
     password: string;
@@ -26,27 +25,34 @@ const AdminProvider = ({ children }: PropsWithChildren<object>) => {
 
     async function fetchAdmin(admin: Credentials): Promise<void> {
         try {
-            const response = await fetch ("/api/admin/login", {
+            const response = await fetch("/api/admin/login", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(admin),
             })
-      
+            
+            console.log(response);
+
             if(response.ok){
               // const data = await response.json();
+              console.log("Login success");
                 setLoginAdmin(true);
             } else {
+              console.log("Login failed");
                 setLoginAdmin(false);
             }
           } catch (error) {
             console.error("Error: ", error)
+            setLoginAdmin(false);
           }
     }
 
     async function logoutAdmin(){
       try {
+        console.log("Logout function");
+        
         const response = await fetch("/api/admin/logout", {
           method: "POST",
           headers: {

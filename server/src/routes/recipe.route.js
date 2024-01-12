@@ -1,12 +1,12 @@
 const express = require("express");
-const { getRecipesModifiersAndToppings, getAllDrinks, addModifier, addTopping, addRecipe, addDrink } = require("../controllers/recipe.controller");
+const { getDashboardData, getAllDrinks, addModifier, addTopping, addRecipe, addDrink } = require("../controllers/recipe.controller");
 const { ModifierCreateValidationSchema, ToppingCreateValidationSchema, RecipeCreateValidationSchema, DrinkCreateValidationSchema } = require("../models/recipe.model");
 const { validate, createModifier, createTopping, deleteItem } = require("../middlewares");
 const { RecipeModel, ModifierModel, ToppingModel, DrinkModel } = require("../models/recipe.model");
 
 const recipeRouter = express
     .Router()
-    .get("/recipe/all", getRecipesModifiersAndToppings)
+    .get("/", getDashboardData)
     .post("/recipe", validate(RecipeCreateValidationSchema), createModifier, createTopping, addRecipe)
     .delete("/recipe/:id", deleteItem(RecipeModel))
     .get("/drinks", getAllDrinks)

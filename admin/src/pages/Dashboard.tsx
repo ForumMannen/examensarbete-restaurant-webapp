@@ -9,6 +9,7 @@ import {
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu, theme } from 'antd';
+// import { useAdminContext } from "../context/AdminContext";
 
 //Import Pages within the Dashboard
 import RecipesPage from './Dashboard-pages/RecipesPage';
@@ -20,6 +21,7 @@ import UsersPage from './Dashboard-pages/UsersPage';
 import Settings from './Dashboard-pages/Settings';
 import CustomHeader from './Dashboard-components/Header';
 import CustomFooter from './Dashboard-components/Footer';
+import { useDashboardData } from '../hooks/fetchDashboardData';
 
 const { Content, Sider } = Layout;
 
@@ -28,6 +30,9 @@ const NavItems = ["Recipes", "Ingredients", "OnlineMenu", "Orders", "Payments", 
 
 const Dashboard: React.FC = () => {
   const [selectedNavItem, setSelectedNavItem] = useState<string>(NavItems[0]);
+  // const { logoutAdmin } = useAdminContext();
+  const { dashboardData } = useDashboardData();
+  const { recipes } = dashboardData;
   
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -40,7 +45,7 @@ const Dashboard: React.FC = () => {
   const getPageComponent = (selected: string) => {
     switch (selected) {
       case 'Recipes':
-        return <RecipesPage />;
+        return <RecipesPage recipes={recipes}/>;
         case 'Ingredients':
           return <Ingredients />;
           case 'OnlineMenu':
@@ -79,7 +84,21 @@ const Dashboard: React.FC = () => {
         style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0, bottom: 0 }}
       >
         <div className="demo-logo-vertical" />
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']} items={items} />
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']} items={items} />
+        <div style={{ position: 'absolute', bottom: 20, left: 20 }}>
+          <button
+            style={{
+              color: 'white',
+              background: 'red',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '16px',
+            }}
+            // onClick={logoutAdmin}
+          >
+            Logout
+          </button>
+        </div>
       </Sider>
       <Layout style={{ marginLeft: 200 }}>
         <CustomHeader />
@@ -125,74 +144,3 @@ const Dashboard: React.FC = () => {
 // }
 
 export default Dashboard
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React from 'react';
-// import type { MenuProps } from 'antd';
-// import { Layout, Menu, theme } from 'antd';
-// import { UserOutlined } from '@ant-design/icons';
-
-
-// const { Header, Content, Footer, Sider } = Layout;
-
-// const items: MenuProps['items'] = [
-//     UserOutlined,
-// ].map((icon, index) => ({
-//     key: String(index + 1),
-//     icon: React.createElement(icon),
-//     label: `nav ${index + 1}`,
-// }))
-
-// const Dashboard: React.FC = () => {
-//     const {
-//         token: { colorBgContainer, borderRadiusLG },
-//     } = theme.useToken();
-
-//   return (
-//     <Layout hasSider>
-//         <Sider style={{ overflow: 'auto', height: '100vh', position: 'fixed', left: '0', top: '0', bottom: '0' }}>
-//             <div className='demo-logo-vertical' />
-//             <Menu theme='dark' mode='inline' defaultSelectedKeys={['4']} items={items}/>
-//         </Sider>
-//         <Layout style={{ marginLeft: 200 }}>
-//             <Header style={{ padding: 0, background: colorBgContainer }}/>
-//             <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-//                 <div
-//                     style={{
-//                         padding: 24,
-//                         textAlign: 'center',
-//                         background: colorBgContainer,
-//                         borderRadius: borderRadiusLG,
-//                     }}>
-//                         <p>long content</p>
-//                         {
-//                             Array.from({ length: 100 }, (_, index) => (
-//                                 <React.Fragment key={index}>
-//                                     {index % 20 === 0 && index ? 'more' : '...'}
-//                                     <br />
-//                                 </React.Fragment>
-//                             ))
-//                         }
-//                     </div>
-//             </Content>
-//             <Footer style={{ textAlign: 'center' }}>
-//                 Linus Design
-//             </Footer>
-//         </Layout>
-//     </Layout>
-//   )
-// }
-
-// export default Dashboard

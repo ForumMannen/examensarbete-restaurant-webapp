@@ -40,14 +40,23 @@ async function login(req, res) {
         return res.status(200).json(admin);
     }
     //Save admin to session
-    res.sendStatus(200);
+    res.status(200).send(admin);
 }
 
 async function logout(req, res) {
-    if (req.session._id) {
-        await req.session.destroy();
+    if (req.session) {
+        await req.session.destroy((err) => {
+            if (err) {
+                console.error('Error destroying session:', err);
+                res.status(500).send('Error logging out');
+            } else {
+                res.clearCookie('connect.sid');
+                res.sendStatus(200);
+            }
+        });
+    } else {
+        res.sendStatus(200);
     }
-    res.sendStatus(200);
 }
 
 async function seeSecret(req, res) {
