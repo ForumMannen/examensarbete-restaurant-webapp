@@ -7,7 +7,7 @@ const { RecipeModel, ModifierModel, ToppingModel, DrinkModel } = require("../mod
 const recipeRouter = express
     .Router()
     .get("/", getDashboardData)
-    .post("/recipe", validate(RecipeCreateValidationSchema), createModifier, createTopping, addRecipe)
+    .post("/recipe", createModifier, createTopping, validate(RecipeCreateValidationSchema), addRecipe)
     .delete("/recipe/:id", deleteItem(RecipeModel))
     .get("/drinks", getAllDrinks)
     .post("/drinks", validate(DrinkCreateValidationSchema), addDrink)

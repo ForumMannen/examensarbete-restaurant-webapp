@@ -83,6 +83,7 @@ async function addTopping(req, res) {
 async function addRecipe(req, res) {
     const { name, modifiers, toppings, category, price } = req.body;
     try {
+        console.log(name, modifiers, toppings, category, price);
         const recipeExists = await RecipeModel.findOne({ name });
         if (recipeExists) {
             return res.status(409).send("A recipe with that name already exists");
