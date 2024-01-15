@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-interface IDashboardData {
+export interface IDashboardData {
     recipes: IRecipesData[];
     modifiers: IModifiersData[];
     toppings: IToppingsData[];
@@ -12,17 +12,19 @@ export interface IRecipesData {
     name: string;
     modifiers: IModifiersData[];
     toppings: IToppingsData[];
+    category: string;
+    price: number;
 }
 
-interface IModifiersData {
+export interface IModifiersData {
     name: string;
 }
 
-interface IToppingsData {
+export interface IToppingsData {
     name: string;
 }
 
-interface IDrinksData {
+export interface IDrinksData {
     _id: string;
     name: string;
     volume: number;

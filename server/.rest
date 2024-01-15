@@ -61,16 +61,22 @@ POST http://localhost:3000/api/dashboard/recipe
 Content-Type: application/json
 
 {
-    "name": "Margherita",
+    "name": "Kebab med bröd",
     "modifiers": [
         {
-            "name": "Tomatsås"
+            "name": "Kebabkött"
         },
         {
-            "name": "Ost"
+            "name": "Sallad"
         }
     ],
-    "toppings": []
+    "toppings": [
+        {
+            "name": "Kebasås"
+        }
+    ],
+    "category": "Kebab",
+    "price": 90
 }
 
 ###

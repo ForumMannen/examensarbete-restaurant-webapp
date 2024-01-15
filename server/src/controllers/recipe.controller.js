@@ -81,7 +81,7 @@ async function addTopping(req, res) {
 }
 
 async function addRecipe(req, res) {
-    const { name, modifiers, toppings } = req.body;
+    const { name, modifiers, toppings, category, price } = req.body;
     try {
         const recipeExists = await RecipeModel.findOne({ name });
         if (recipeExists) {
@@ -122,7 +122,9 @@ async function addRecipe(req, res) {
         const recipe = new RecipeModel({
             name,
             modifiers,
-            toppings
+            toppings,
+            category,
+            price
         });
         await recipe.save();
 

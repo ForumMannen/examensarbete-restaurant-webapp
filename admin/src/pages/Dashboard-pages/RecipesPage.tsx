@@ -1,100 +1,97 @@
-// import { IRecipesData } from '../../hooks/fetchDashboardData'
-
-// const RecipesPage: React.FC<{ recipes: IRecipesData[] }> = ({ recipes }) => {
-//   // Use the recipes data to render the page
-//   return (
-//     <div>
-//       <h1>Recipes</h1>
-//       {/* Render recipes using the 'recipes' prop */}
-//     </div>
-//   );
-// };
-
 import React from 'react';
-import { Space, Table, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
+// import { Space, Table, Tag } from 'antd';
+// import type { ColumnsType } from 'antd/es/table';
+import { IRecipesData } from '../../hooks/fetchDashboardData';
+import CategoryTable from '../Dashboard-tables/CategoryTable';
 
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
+interface RecipesPageProps {
+  recipes: IRecipesData[];
 }
 
-const columns: ColumnsType<DataType> = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: 'Age',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Address',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: 'Tags',
-    key: 'tags',
-    dataIndex: 'tags',
-    render: (_, { tags }) => (
-      <>
-        {tags.map((tag) => {
-          let color = tag.length > 5 ? 'geekblue' : 'green';
-          if (tag === 'loser') {
-            color = 'volcano';
-          }
-          return (
-            <Tag color={color} key={tag}>
-              {tag.toUpperCase()}
-            </Tag>
-          );
-        })}
-      </>
-    ),
-  },
-  {
-    title: 'Action',
-    key: 'action',
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Invite {record.name}</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
+const convertData = (recipes: IRecipesData[]): IRecipesData[] => {
+  return recipes.map((recipe) => ({
+    ...recipe,
+    key: recipe._id,
+  }));
+};
 
-const data: DataType[] = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sydney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
+const RecipesPage: React.FC<RecipesPageProps> = ({ recipes }) => {
+  const categories = Array.from(new Set(recipes.map((recipe) => recipe.category)));
 
-const RecipesPage: React.FC<{ recipes: IRecipesData[] }> = ({ recipes }) => <Table columns={columns} dataSource={data} />;
-
+  return (
+    <>
+      {categories.map((category) => (
+        <div key={category}>
+          <h2>{category}</h2>
+          <CategoryTable recipes={convertData(recipes.filter((recipe) => recipe.category === category))} />
+        </div>
+      ))}
+    </>
+  )
+}
 export default RecipesPage
+
+// const columns: ColumnsType<IRecipesData> = [
+//   {
+//     title: 'Namn',
+//     dataIndex: 'name',
+//     key: 'name',
+//     render: (text) => <a>{text}</a>,
+//   },
+//   {
+//     title: 'Ingredienser',
+//     dataIndex: 'modifiers',
+//     key: 'modifiers',
+//     render: (_, { modifiers }) => (
+//       <>
+//         {modifiers.map((modifier, index) => (
+//           <Tag color="blue" key={index}>
+//             {modifier.name}
+//           </Tag>
+//         ))}
+//       </>
+//     )
+//   },
+//   {
+//     title: 'Tillbehör',
+//     key: 'toppings',
+//     dataIndex: 'toppings',
+//     render: (_, { toppings }) => (
+//       <>
+//         {toppings.map((topping, index) => (
+//           <Tag color="green" key={index}>
+//             {topping.name}
+//           </Tag>
+//         ))}
+//       </>
+//     ),
+//   },
+//   {
+//     title: 'Pris',
+//     dataIndex: 'price',
+//     key: 'price',
+//   },
+//   {
+//     title: 'Uppdatera / Radera recept',
+//     key: 'action',
+//     render: () => (
+//       <Space size="middle">
+//         <a>Redigera</a>
+//         <a>Radera</a>
+//       </Space>
+//     ),
+//   },
+// ];
+
+// const convertData = (recipes: IRecipesData[]): IRecipesData[] => {
+//   return recipes.map((recipe) => ({
+//     ...recipe,
+//     key: recipe._id,
+//   }));
+// };
+
+// const RecipesPage: React.FC<{ recipes: IRecipesData[] }> = ({ recipes }) => (
+//   <Table columns={columns} dataSource={convertData(recipes)} />
+// );
+
+// export default RecipesPage

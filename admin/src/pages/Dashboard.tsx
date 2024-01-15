@@ -32,7 +32,7 @@ const Dashboard: React.FC = () => {
   const [selectedNavItem, setSelectedNavItem] = useState<string>(NavItems[0]);
   // const { logoutAdmin } = useAdminContext();
   const { dashboardData } = useDashboardData();
-  const { recipes } = dashboardData;
+  const { recipes, modifiers, toppings } = dashboardData;
   
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -47,7 +47,7 @@ const Dashboard: React.FC = () => {
       case 'Recipes':
         return <RecipesPage recipes={recipes}/>;
         case 'Ingredients':
-          return <Ingredients />;
+          return <Ingredients modifiers={modifiers} toppings={toppings}/>;
           case 'OnlineMenu':
             return <OnlineMenu />;
             case 'Orders':

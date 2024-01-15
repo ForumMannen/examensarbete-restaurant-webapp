@@ -27,7 +27,9 @@ const RecipesSchema = new Schema({
         type: [ModifiersSchema],
         _id: false
     },
-    toppings: [ToppingsSchema]
+    toppings: [ToppingsSchema],
+    category: { type: String, required: true },
+    price: { type: Number, required: true },
 })
 
 const RecipeModel = models.recipe || model("recipes", RecipesSchema);
@@ -35,7 +37,9 @@ const RecipeModel = models.recipe || model("recipes", RecipesSchema);
 const RecipeCreateValidationSchema = Joi.object({
     name: Joi.string().required(),
     modifiers: Joi.array().items(ModifierCreateValidationSchema).min(1).required(),
-    toppings: Joi.array().items(ToppingCreateValidationSchema)
+    toppings: Joi.array().items(ToppingCreateValidationSchema),
+    category: Joi.string().required(),
+    price: Joi.number().required()
 });
 
 const DrinkSchema = new Schema({
