@@ -1,10 +1,11 @@
 const { ModifierModel, ToppingModel, RecipeModel, DrinkModel } = require("../models/recipe.model");
 
-async function getRecipesModifiersAndToppings(req, res) {
+async function getDashboardData(req, res) {
     try {
         let recipesFromDB = await RecipeModel.find();
         let modifiersFromDB = await ModifierModel.find();
         let toppingsFromDB = await ToppingModel.find();
+        let drinksFromDB = await DrinkModel.find();
 
         if (!recipesFromDB) {
             return res.status(409).send("Couldn't find recipes from database")
@@ -18,7 +19,11 @@ async function getRecipesModifiersAndToppings(req, res) {
             return res.status(409).send("Couldn't find toppings from database")
         }
 
-        res.status(200).send({ recipesFromDB, modifiersFromDB, toppingsFromDB });
+        if (!drinksFromDB) {
+            return res.status(409).send("Couldn't find drinks from database")
+        }
+
+        res.status(200).send({ recipesFromDB, modifiersFromDB, toppingsFromDB, drinksFromDB });
     } catch (error) {
         console.error("Error adding modifier: ", error);
         res.status(500).json({ message: "Internal server error" });
@@ -76,7 +81,7 @@ async function addTopping(req, res) {
 }
 
 async function addRecipe(req, res) {
-    const { name, modifiers, toppings } = req.body;
+    const { name, modifiers, toppings, category, price } = req.body;
     try {
         const recipeExists = await RecipeModel.findOne({ name });
         if (recipeExists) {
@@ -117,7 +122,9 @@ async function addRecipe(req, res) {
         const recipe = new RecipeModel({
             name,
             modifiers,
-            toppings
+            toppings,
+            category,
+            price
         });
         await recipe.save();
 
@@ -144,4 +151,4 @@ async function addDrink(req, res) {
     }
 }
 
-module.exports = { getRecipesModifiersAndToppings, getAllDrinks, addModifier, addTopping, addRecipe, addDrink }
+module.exports = { getDashboardData, getAllDrinks, addModifier, addTopping, addRecipe, addDrink }
