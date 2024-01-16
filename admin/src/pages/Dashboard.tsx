@@ -26,14 +26,13 @@ import { useDashboardData } from '../hooks/fetchDashboardData';
 const { Content, Sider } = Layout;
 
 //Change depending on what kind of customer
-const NavItems = ["Recipes", "Ingredients", "OnlineMenu", "Orders", "Payments", "Users", "Settings"];
+const NavItems = ["Recept", "Ingredienser", "OnlineMenu", "Orders", "Payments", "Users", "Settings"];
 
 const Dashboard: React.FC = () => {
   const [selectedNavItem, setSelectedNavItem] = useState<string>(NavItems[0]);
   // const { logoutAdmin } = useAdminContext();
   const { dashboardData } = useDashboardData();
   const { recipes, modifiers, toppings } = dashboardData;
-  
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -44,9 +43,9 @@ const Dashboard: React.FC = () => {
 
   const getPageComponent = (selected: string) => {
     switch (selected) {
-      case 'Recipes':
+      case 'Recept':
         return <RecipesPage recipes={recipes}/>;
-        case 'Ingredients':
+        case 'Ingredienser':
           return <Ingredients modifiers={modifiers} toppings={toppings}/>;
           case 'OnlineMenu':
             return <OnlineMenu />;
