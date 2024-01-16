@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Button,
   Form,
@@ -19,6 +19,13 @@ const AddRecipe: React.FC = () => {
         category: '',
         price: 0,
       });
+
+    const [categories, setCategories] = useState<string[]>([]);
+
+    useEffect(() => {
+        const sampleCategories = ['Demo', 'Category1', 'Category2'];
+        setCategories(sampleCategories);
+    }, []); 
     
       const handleRemoveModifierField = (name: string) => {
         setRecipeData((prevData) => ({
@@ -85,6 +92,7 @@ const AddRecipe: React.FC = () => {
       </Form.Item>
       <Form.Item label="Kategori">
         <Select
+            showSearch
             value={recipeData.category}
             onChange={(value) => {
                 setRecipeData((prevData) => ({
@@ -92,7 +100,12 @@ const AddRecipe: React.FC = () => {
                     category: value,
                 }));
             }}
+            placeholder="Välj kategori eller lägg till kategori" 
+            optionFilterProp="children" 
+            filterOption={(input, option) =>
+            (option?.value as string).toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
+            {categories}
           <Select.Option value="demo">Demo</Select.Option>
         </Select>
       </Form.Item>
