@@ -3,6 +3,7 @@ import React from 'react';
 // import type { ColumnsType } from 'antd/es/table';
 import { IRecipesData } from '../../hooks/fetchDashboardData';
 import CategoryTable from '../Dashboard-tables/CategoryTable';
+import AddRecipe from '../../components/AddRecipe';
 
 interface RecipesPageProps {
   recipes: IRecipesData[];
@@ -20,6 +21,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes }) => {
 
   return (
     <>
+      <AddRecipe />
       {categories.map((category) => (
         <div key={category}>
           <h2>{category}</h2>

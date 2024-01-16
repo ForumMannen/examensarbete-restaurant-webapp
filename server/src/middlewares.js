@@ -2,6 +2,7 @@ const { ModifierModel, ToppingModel } = require("./models/recipe.model");
 
 function validate(joiSchema) {
     return (req, res, next) => {
+        console.log(req.body);
         const validation = joiSchema.validate(req.body);
         if (!validation.error) return next();
         res.status(400).json(validation.error.message);
@@ -14,9 +15,10 @@ async function createModifier(req, res, next) {
     try {
         const existingModifiers = await Promise.all(
             modifiers.map(async (modifier) => {
+                console.log("Creating modifier:", modifier.name);
                 const existingModifier = await ModifierModel.findOne({ name: modifier.name });
                 if (!existingModifier) {
-                    const newModifier = new ModifierModel(modifier);
+                    const newModifier = new ModifierModel({ name: modifier.name });
                     await newModifier.save();
                     return newModifier
                 }
@@ -37,9 +39,10 @@ async function createTopping(req, res, next) {
     try {
         const existingToppings = await Promise.all(
             toppings.map(async (topping) => {
+                console.log("Creating topping:", topping.name);
                 const existingTopping = await ToppingModel.findOne({ name: topping.name });
                 if (!existingTopping) {
-                    const newTopping = new ToppingModel(topping);
+                    const newTopping = new ToppingModel({ name: topping.name });
                     await newTopping.save();
                     return newTopping
                 }
