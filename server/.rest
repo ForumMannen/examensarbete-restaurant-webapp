@@ -61,22 +61,22 @@ POST http://localhost:3000/api/dashboard/recipe
 Content-Type: application/json
 
 {
-    "name": "Kebab med bröd",
+    "name": "Gyros Special",
     "modifiers": [
         {
-            "name": "Kebabkött"
+            "name": "Gyros"
         },
         {
-            "name": "Sallad"
+            "name": "Lök"
         }
     ],
     "toppings": [
         {
-            "name": "Kebasås"
+            "name": "Pommes"
         }
     ],
-    "category": "Kebab",
-    "price": 90
+    "category": "Pizza 3",
+    "price": 120
 }
 
 ###

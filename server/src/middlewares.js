@@ -63,7 +63,7 @@ const deleteItem = (Model) => async (req, res) => {
         if (!item) {
             return res.status(404).send("Item not found")
         }
-        res.sendStatus(204);
+        res.sendStatus(200);
     } catch (error) {
         res.status(500).send("Error deleting item");
     }

@@ -67,7 +67,7 @@ async function addTopping(req, res) {
     let { name } = req.body;
 
     try {
-        const topping = await ToppingModel.findOne({ name });
+        let topping = await ToppingModel.findOne({ name });
         if (topping) {
             return res.sendStatus(409);
         }
