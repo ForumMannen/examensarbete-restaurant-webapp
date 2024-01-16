@@ -2,22 +2,26 @@ const { Schema, model, models } = require("mongoose");
 const Joi = require("joi");
 
 const ModifiersSchema = new Schema({
+    _id: { type: String, required: true },
     name: { type: String, required: true },
 })
 
 const ModifierModel = models.modifier || model("modifiers", ModifiersSchema);
 
 const ModifierCreateValidationSchema = Joi.object({
+    _id: Joi.string().required(),
     name: Joi.string().required(),
 })
 
 const ToppingsSchema = new Schema({
+    _id: { type: String, required: true },
     name: { type: String, required: true }
 })
 
 const ToppingModel = models.topping || model("toppings", ToppingsSchema)
 
 const ToppingCreateValidationSchema = Joi.object({
+    _id: Joi.string().required(),
     name: Joi.string().required(),
 })
 

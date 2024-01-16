@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Space, Table, Tag } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
@@ -18,6 +18,10 @@ const convertData = (recipes: IRecipesData[]): IRecipesData[] => {
 
 const CategoryTable: React.FC<CategoryTableProps> = ({ recipes }) => {
     const [data, setData] = useState<IRecipesData[]>(recipes);
+
+    useEffect(() => {
+      setData(recipes);
+    }, [recipes]);
 
     const handleDelete = async (record: IRecipesData) => {
       try {

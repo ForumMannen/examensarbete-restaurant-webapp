@@ -17,10 +17,12 @@ export interface IRecipesData {
 }
 
 export interface IModifiersData {
+    _id: string;
     name: string;
 }
 
 export interface IToppingsData {
+    _id: string;
     name: string;
 }
 
@@ -38,6 +40,7 @@ export const fetchDashboardData = async () => {
         const data = await response.json();
         return data;
     } catch (error) {
+        console.error("Error fetching data: ", error);
         throw new Error('Error fetching data');
     }
 }
@@ -54,12 +57,15 @@ export const useDashboardData = () => {
         const fetchData = async () => {
             try {
                 const data = await fetchDashboardData();
-                setDashboardData({
-                    recipes: data.recipesFromDB,
-                    modifiers: data.modifiersFromDB,
-                    toppings: data.toppingsFromDB,
-                    drinks: data.drinksFromDB,
-                })
+                if(data.recipesFromDB.length > 0 || data.modifiersFromDB.length > 0 || data.toppingsFromDB.length > 0 || data.drinksFromDB.length > 0){
+                    setDashboardData(() => ({
+                        recipes: data.recipesFromDB,
+                        modifiers: data.modifiersFromDB,
+                        toppings: data.toppingsFromDB,
+                        drinks: data.drinksFromDB,
+                    }));
+                }
+                console.log("The hook: ", data)
             } catch (error) {
                 if(error){
                    console.error(error); 
