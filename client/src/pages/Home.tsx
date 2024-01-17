@@ -1,11 +1,14 @@
 import { useMenuData } from "../hooks/fetchMenuList";
 import './Home.css';
 import { IRecipesData } from "../hooks/fetchMenuList";
+import { useCartContext } from '../context/CartContext';
 
 const Home: React.FC = () => {
   const { menuData } = useMenuData();
   const { recipes } = menuData;
   console.log(recipes);
+
+  const { addToCart } = useCartContext();
 
   const sortRecipesByCategory: Record<string, IRecipesData[]> = {};
 
@@ -16,14 +19,26 @@ const Home: React.FC = () => {
     sortRecipesByCategory[recipe.category].push(recipe);
   });
   
-  // Iterate through categories and create tables
+  const handleAddToCart = (recipe: IRecipesData) => {
+    const cartItem = {
+      productName: recipe.name,
+      quantity: 1,
+      price: recipe.price
+    }
+    addToCart(cartItem);
+    console.log(cartItem);
+    
+  }
+
   const categoryTables = Object.keys(sortRecipesByCategory).map((category: string) => (
     <div key={category}>
       <h2>{category}</h2>
       <div className="table">
         {sortRecipesByCategory[category].map((recipe, index) => (
           <article className="product-card" key={index}>
-            <a href="/product-page" className="product-info">
+            <div  
+            className="product-info"
+            onClick={() => handleAddToCart(recipe)}>
               <p className="product-title">{recipe.name}</p>
               <div className="product-modifiers">
                 {recipe.modifiers.map((modifier, modifierIndex) => (
@@ -31,7 +46,7 @@ const Home: React.FC = () => {
                 ))}
               </div>
               <p className="product-price">{recipe.price} kr</p>
-            </a>
+            </div>
           </article>
         ))}
       </div>

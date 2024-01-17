@@ -4,6 +4,7 @@ import Kontakt from "./pages/Kontakt";
 import Header from "./components/Header";
 import Main from "./components/Main";
 import Footer from "./components/Footer";
+import Cart from "./pages/Cart";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/kontakt" element={<Kontakt />}/>
+            <Route path="/kundvagn" element={<Cart />}/>
           </Routes>
         </Main>
         <Footer />

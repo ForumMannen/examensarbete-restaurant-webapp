@@ -1,0 +1,80 @@
+import { createContext, useContext, useReducer, ReactNode } from "react";
+
+interface CartItem {
+    productName: string;
+    quantity: number;
+    price: number;
+}
+
+interface CartState {
+    items: CartItem[];
+}
+
+type CartAction = { type: 'ADD_TO_CART'; payload: CartItem };
+
+interface CartContextType {
+    cartState: CartState;
+    addToCart: (item: CartItem) => void;
+}
+
+const CartContext = createContext<CartContextType | undefined>(undefined);
+
+export const useCartContext = (): CartContextType => {
+    const context = useContext(CartContext);
+    if(!context){
+        throw new Error('useCartContext must be used within a CartProvider')
+    }
+    return context;
+}
+
+const cartReducer = (state: CartState, action: CartAction) => {
+    switch (action.type) {
+        case 'ADD_TO_CART': {
+            const existingCartItemIndex = state.items.findIndex(item =>
+                item.productName === action.payload.productName
+            );
+
+            if (existingCartItemIndex !== -1) {
+
+                const updatedItems = state.items.map((item, index) =>
+                    index === existingCartItemIndex
+                        ? { ...item, quantity: item.quantity + action.payload.quantity }
+                        : item
+                );
+
+                return {
+                    ...state,
+                    items: updatedItems,
+                };
+            } else {
+
+                return {
+                    ...state,
+                    items: [...state.items, action.payload],
+                };
+            }
+        }
+        default:
+            return state;
+    }
+};
+
+interface CartProviderProps {
+    children: ReactNode;
+}
+
+const CartProvider = ({ children }: CartProviderProps) => {
+    const [cartState, dispatch] = useReducer(cartReducer, { items: [] });
+
+    const addToCart = (item: CartItem) => {
+        dispatch({ type: 'ADD_TO_CART', payload: item });
+    };
+
+    return (
+        <CartContext.Provider value={{ cartState, addToCart }}>
+            {children}
+        </CartContext.Provider>
+    )
+}
+
+export { CartProvider, CartContext };
