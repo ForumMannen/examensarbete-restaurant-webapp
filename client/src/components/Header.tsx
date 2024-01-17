@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { ShoppingTwoTone } from '@ant-design/icons';
 import './Header.css';
 
 function Header() {
@@ -13,6 +14,7 @@ function Header() {
             <Link to="/kontakt">Kontakt</Link>
           </li>
         </ul>
+        <Link to="kundvagn"><ShoppingTwoTone /></Link>
       </nav>
     </header>
   )
