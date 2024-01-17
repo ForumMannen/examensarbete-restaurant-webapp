@@ -30,27 +30,34 @@ export const useCartContext = (): CartContextType => {
 const cartReducer = (state: CartState, action: CartAction) => {
     switch (action.type) {
         case 'ADD_TO_CART': {
-            const existingCartItemIndex = state.items.findIndex(item =>
-                item.productName === action.payload.productName
+            const existingCartItemIndex = state.items.findIndex(
+                (item) => item.productName === action.payload.productName
             );
-
+        
             if (existingCartItemIndex !== -1) {
-
                 const updatedItems = state.items.map((item, index) =>
                     index === existingCartItemIndex
-                        ? { ...item, quantity: item.quantity + action.payload.quantity }
+                        ? {
+                              ...item,
+                              quantity: item.quantity + action.payload.quantity,
+                              price: action.payload.price * (item.quantity + action.payload.quantity),
+                          }
                         : item
                 );
-
+        
                 return {
                     ...state,
                     items: updatedItems,
                 };
             } else {
-
+                const newItem = {
+                    ...action.payload,
+                    price: action.payload.price * action.payload.quantity,
+                };
+        
                 return {
                     ...state,
-                    items: [...state.items, action.payload],
+                    items: [...state.items, newItem],
                 };
             }
         }

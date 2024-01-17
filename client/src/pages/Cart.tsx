@@ -1,11 +1,18 @@
 import { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
+import useStripeIntegration from '../hooks/useStripeIntegration';
 
 const Cart: React.FC = () => {
     const { cartState } = useContext(CartContext) || {};
+    const handlePayment = useStripeIntegration();
 
     if(!cartState){
         return <div>Error: CartContext is undefined</div>
+    }
+
+    const handleButtonClick = () => {
+      const orderData = cartState;
+      handlePayment(orderData);
     }
 
   return (
@@ -14,7 +21,7 @@ const Cart: React.FC = () => {
         {cartState.items.map((item, index) => (
             <div key={index}>{item.productName} - Antal: {item.quantity} - Pris: {item.price} kr</div>
         ))}
-        <button>Betala</button>
+        <button onClick={handleButtonClick}>Betala</button>
     </div>
   )
 }
