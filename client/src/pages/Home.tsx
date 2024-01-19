@@ -6,7 +6,6 @@ import { useCartContext } from '../context/CartContext';
 const Home: React.FC = () => {
   const { menuData } = useMenuData();
   const { recipes } = menuData;
-  console.log(recipes);
 
   const { addToCart } = useCartContext();
 
@@ -23,11 +22,10 @@ const Home: React.FC = () => {
     const cartItem = {
       productName: recipe.name,
       quantity: 1,
-      price: recipe.price
+      price: recipe.price,
+      total: 1 * recipe.price,
     }
     addToCart(cartItem);
-    console.log(cartItem);
-    
   }
 
   const categoryTables = Object.keys(sortRecipesByCategory).map((category: string) => (

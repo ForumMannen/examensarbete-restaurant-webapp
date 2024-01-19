@@ -1,12 +1,13 @@
 import { createContext, useContext, useReducer, ReactNode } from "react";
 
-interface CartItem {
+export interface CartItem {
     productName: string;
     quantity: number;
     price: number;
+    total: number;
 }
 
-interface CartState {
+export interface CartState {
     items: CartItem[];
 }
 
@@ -40,7 +41,7 @@ const cartReducer = (state: CartState, action: CartAction) => {
                         ? {
                               ...item,
                               quantity: item.quantity + action.payload.quantity,
-                              price: action.payload.price * (item.quantity + action.payload.quantity),
+                              total: action.payload.price * (item.quantity + action.payload.quantity),
                           }
                         : item
                 );
@@ -52,7 +53,7 @@ const cartReducer = (state: CartState, action: CartAction) => {
             } else {
                 const newItem = {
                     ...action.payload,
-                    price: action.payload.price * action.payload.quantity,
+                    total: action.payload.price * action.payload.quantity,
                 };
         
                 return {
