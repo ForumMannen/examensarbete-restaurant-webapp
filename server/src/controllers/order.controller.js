@@ -53,6 +53,7 @@ async function createCheckoutSession(req, res) {
 
 async function verifyPayment(req, res) {
     try {
+        console.log("VERIFY PAYMENT!")
         const session = await stripe.checkout.sessions.retrieve(
             req.body.sessionId,
             {
@@ -66,12 +67,13 @@ async function verifyPayment(req, res) {
         }
 
         const line_items = session.line_items && session.line_items.data;
+        console.log(line_items);
 
         if (line_items) {
             const products = line_items.map((accessData) => {
                 return {
                     product: accessData.description,
-                    pricePerProduct: accessData.price.unit_amount / 100,
+                    unitPrice: accessData.price.unit_amount / 100,
                     quantity: accessData.quantity,
                 };
             });

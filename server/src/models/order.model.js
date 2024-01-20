@@ -5,7 +5,7 @@ const OrderItemSchema = new Schema(
     {
         product: { type: String, required: true },
         quantity: { type: String, required: true },
-        price: { type: Number, default: 0 }
+        unitPrice: { type: Number, default: 0 }
     }
 )
 

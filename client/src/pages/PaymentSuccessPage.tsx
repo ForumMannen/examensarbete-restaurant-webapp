@@ -8,8 +8,12 @@ function PaymentSuccessPage() {
 
     useEffect(() => {
         const sessionId: string | null = sessionStorage.getItem("session-id");
+        console.log(verificationAttemptedRef);
+        
 
-        if(sessionId !== null && !verificationAttemptedRef.current === false){
+        if(sessionId !== null && !verificationAttemptedRef.current){
+            console.log("Den kommer inte ens hit?")
+
             const handleVerification = async () => {
                 try {
                     console.log("Attempting payment verification");
