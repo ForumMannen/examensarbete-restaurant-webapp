@@ -17,9 +17,11 @@ app.use(
 //Import routers
 const { adminRouter } = require("./routes/admin.route");
 const { recipeRouter } = require("./routes/recipe.route");
+const { orderRouter } = require("./routes/order.route");
 
 //Add routers
 app.use("/api/admin", adminRouter);
 app.use("/api/dashboard", recipeRouter);
+app.use("/api/order", orderRouter);
 
 module.exports = { app };
