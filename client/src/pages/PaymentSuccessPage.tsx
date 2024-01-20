@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import useStripeIntegration from "../hooks/useStripeIntegration";
 
 function PaymentSuccessPage() {
     const { verifyPayment } = useStripeIntegration();
-    const [verificationAttempted, setVerificationAttempted] = useState(false);
+    // const [verificationAttempted, setVerificationAttempted] = useState(false);
+    const verificationAttemptedRef = useRef(false);
 
     useEffect(() => {
         const sessionId: string | null = sessionStorage.getItem("session-id");
 
-        const handleVerification = async () => {
-            if (sessionId !== null && !verificationAttempted) {
+        if(sessionId !== null && !verificationAttemptedRef.current === false){
+            const handleVerification = async () => {
                 try {
                     console.log("Attempting payment verification");
                     
@@ -18,12 +19,16 @@ function PaymentSuccessPage() {
                 } catch (error) {
                     console.error("Payment verification failed", error);
                 } finally {
-                    setVerificationAttempted(true);
+                    verificationAttemptedRef.current = true;
                 }
+            };
+            handleVerification();
+
+            return () => {
+                verificationAttemptedRef.current = true;
             }
-        };
-        handleVerification();
-    }, [verifyPayment, verificationAttempted]);
+        }
+    }, [verifyPayment]);
 
   return (
     <div>PaymentSuccessPage</div>
