@@ -1,29 +1,36 @@
 const { Schema, model, models } = require("mongoose");
 const Joi = require("joi");
 
+// MODIFIER
 const ModifiersSchema = new Schema({
-    _id: { type: String, required: true },
+    id: { type: String, required: true },
     name: { type: String, required: true },
 })
 
 const ModifierModel = models.modifier || model("modifiers", ModifiersSchema);
 
 const ModifierCreateValidationSchema = Joi.object({
-    _id: Joi.string().required(),
+    id: Joi.string().required(),
     name: Joi.string().required(),
 })
 
+
+// TOPPING
+
 const ToppingsSchema = new Schema({
-    _id: { type: String, required: true },
+    id: { type: String, required: true },
     name: { type: String, required: true }
 })
 
 const ToppingModel = models.topping || model("toppings", ToppingsSchema)
 
 const ToppingCreateValidationSchema = Joi.object({
-    _id: Joi.string().required(),
+    id: Joi.string().required(),
     name: Joi.string().required(),
 })
+
+
+// RECIPE
 
 const RecipesSchema = new Schema({
     name: { type: String, required: true },
@@ -45,6 +52,10 @@ const RecipeCreateValidationSchema = Joi.object({
     category: Joi.string().required(),
     price: Joi.number().required()
 });
+
+
+
+// DRINKS
 
 const DrinkSchema = new Schema({
     name: { type: String, required: true },

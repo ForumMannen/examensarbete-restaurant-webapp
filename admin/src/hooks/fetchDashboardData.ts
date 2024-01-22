@@ -65,7 +65,7 @@ export const useDashboardData = () => {
                         drinks: data.drinksFromDB,
                     }));
                 }
-                console.log("The hook: ", data)
+                // console.log("The hook: ", data)
             } catch (error) {
                 if(error){
                    console.error(error); 

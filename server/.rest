@@ -105,7 +105,7 @@ DELETE http://localhost:3000/api/dashboard/recipe/659d25f9d6bedfa269216e5f
 ###
 
 //Radera modifiers
-DELETE http://localhost:3000/api/dashboard/modifiers/659d25f9d6bedfa269216e5f
+DELETE http://localhost:3000/api/dashboard/modifiers/65a63f4d075e4e040eedd5e4
 
 ###
 

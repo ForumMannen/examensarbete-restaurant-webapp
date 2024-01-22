@@ -40,7 +40,7 @@ async function getAllDrinks(req, res) {
 
         res.status(200).send({ drinksFromDB });
     } catch (error) {
-        console.error("Error adding modifier: ", error);
+        console.error("Error adding drinks: ", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }

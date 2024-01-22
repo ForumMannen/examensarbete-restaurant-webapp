@@ -59,12 +59,13 @@ async function createTopping(req, res, next) {
 
 const deleteItem = (Model) => async (req, res) => {
     try {
-        const item = await Model.findOneAndDelete({ _id: req.params.id });
+        const item = await Model.findByIdAndDelete(req.params.id);
         if (!item) {
             return res.status(404).send("Item not found")
         }
         res.sendStatus(200);
     } catch (error) {
+        console.error("Error deleting item", error)
         res.status(500).send("Error deleting item");
     }
 }

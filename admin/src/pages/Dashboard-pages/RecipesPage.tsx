@@ -16,7 +16,6 @@ const convertData = (recipes: IRecipesData[]): IRecipesData[] => {
 
 const RecipesPage: React.FC<RecipesPageProps> = ({ recipes }) => {
   useEffect(() => {
-    console.log('Recipes prop:', recipes);
   }, [recipes])
   
   const categories = Array.from(new Set(recipes.map((recipe) => recipe.category)));
