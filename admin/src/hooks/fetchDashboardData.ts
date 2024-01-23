@@ -5,6 +5,7 @@ export interface IDashboardData {
     modifiers: IModifiersData[];
     toppings: IToppingsData[];
     drinks: IDrinksData[];
+    categories: ICategoriesData[];
 }
 
 export interface IRecipesData {
@@ -23,6 +24,10 @@ export interface IModifiersData {
 
 export interface IToppingsData {
     _id: string;
+    name: string;
+}
+
+export interface ICategoriesData {
     name: string;
 }
 
@@ -50,22 +55,24 @@ export const useDashboardData = () => {
         recipes: [],
         modifiers: [],
         toppings: [],
-        drinks: []
+        drinks: [],
+        categories: [],
     });
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const data = await fetchDashboardData();
-                if(data.recipesFromDB.length > 0 || data.modifiersFromDB.length > 0 || data.toppingsFromDB.length > 0 || data.drinksFromDB.length > 0){
+                if(data.recipesFromDB.length > 0 || data.modifiersFromDB.length > 0 || data.toppingsFromDB.length > 0 || data.drinksFromDB.length > 0 || data.categoriesFromDB){
                     setDashboardData(() => ({
                         recipes: data.recipesFromDB,
                         modifiers: data.modifiersFromDB,
                         toppings: data.toppingsFromDB,
                         drinks: data.drinksFromDB,
+                        categories: data.categoriesFromDB
                     }));
                 }
-                // console.log("The hook: ", data)
+                // console.log("The hook: ", data.categoriesFromDB)
             } catch (error) {
                 if(error){
                    console.error(error); 

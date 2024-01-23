@@ -3,14 +3,14 @@ const Joi = require("joi");
 
 // MODIFIER
 const ModifiersSchema = new Schema({
-    id: { type: String, required: true },
+    // id: { type: String, required: true },
     name: { type: String, required: true },
 })
 
 const ModifierModel = models.modifier || model("modifiers", ModifiersSchema);
 
 const ModifierCreateValidationSchema = Joi.object({
-    id: Joi.string().required(),
+    // id: Joi.string().required(),
     name: Joi.string().required(),
 })
 
@@ -18,14 +18,24 @@ const ModifierCreateValidationSchema = Joi.object({
 // TOPPING
 
 const ToppingsSchema = new Schema({
-    id: { type: String, required: true },
-    name: { type: String, required: true }
+    // id: { type: String, required: true },
+    name: { type: String, required: false }
 })
 
 const ToppingModel = models.topping || model("toppings", ToppingsSchema)
 
 const ToppingCreateValidationSchema = Joi.object({
-    id: Joi.string().required(),
+    // id: Joi.string().required(),
+    name: Joi.string().optional(),
+})
+
+const CategorySchema = new Schema({
+    name: { type: String, required: true },
+})
+
+const CategoryModel = models.category || model("categories", CategorySchema);
+
+const CategoryCreateValidationSchema = Joi.object({
     name: Joi.string().required(),
 })
 
@@ -73,4 +83,4 @@ const DrinkCreateValidationSchema = Joi.object({
     price: Joi.number().required()
 })
 
-module.exports = { ModifierModel, ModifierCreateValidationSchema, ToppingModel, ToppingCreateValidationSchema, RecipeModel, RecipeCreateValidationSchema, DrinkModel, DrinkCreateValidationSchema };
+module.exports = { ModifierModel, ModifierCreateValidationSchema, ToppingModel, ToppingCreateValidationSchema, CategoryModel, CategoryCreateValidationSchema, RecipeModel, RecipeCreateValidationSchema, DrinkModel, DrinkCreateValidationSchema };

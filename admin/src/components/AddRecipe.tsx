@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Form,
@@ -9,23 +9,46 @@ import {
 import AddDynamicField from './AddDynamicField';
 import { addRecipeToDB, Recipe } from '../hooks/addRecipeToDB';
 
-const AddRecipe: React.FC = () => {
-    // const [modifiersNames, setModifiersNames] = useState<string[]>(['']);
-    // const [toppingNames, setToppingNames] = useState<string[]>(['']);
-    const [recipeData, setRecipeData] = useState({
+interface Modifier {
+  name: string;
+}
+
+interface Topping {
+  name: string;
+}
+
+interface AddRecipeProps {
+  categories: string[];
+}
+
+interface RecipeData {
+  name: string;
+  modifiers: Modifier[];
+  toppings: Topping[];
+  category: string;
+  categoryInput?: string;
+  price: number;
+}
+
+const AddRecipe: React.FC<AddRecipeProps> = ({ categories }) => {
+    const [recipeData, setRecipeData] = useState<RecipeData>({
         name: '',
         modifiers: [{ name: '' }],
-        toppings: [{ name: '' }],
+        toppings: [],
         category: '',
         price: 0,
       });
+    // const { dashboardData } = useDashboardData();
+    // const { categories } = dashboardData;
 
-    const [categories, setCategories] = useState<string[]>([]);
+    // const [categories, setCategories] = useState<string[]>([]);
 
-    useEffect(() => {
-        const sampleCategories = ['Demo', 'Category1', 'Category2'];
-        setCategories(sampleCategories);
-    }, []); 
+    // useEffect(() => {
+    //     const allCategories = [
+    //       ...new Set(propCategories),
+    //     ];
+    //     setCategories(allCategories);
+    // }, [propCategories]); 
     
       const handleRemoveModifierField = (name: string) => {
         setRecipeData((prevData) => ({
@@ -76,12 +99,19 @@ const AddRecipe: React.FC = () => {
         }));
       };
     
-      const handleAddRecipeClick = () => {
+      const handleAddRecipeClick = async () => {
+        const { categoryInput, ...restRecipeData } = recipeData;
+
+        const noEmptyModifiers = restRecipeData.modifiers.filter(modifier => modifier.name.trim() !== '');
+
         const modifiedData: Recipe = {
-            ...recipeData,
-            modifiers: recipeData.modifiers.map(modifier => ({ name: modifier.name })),
-            toppings: recipeData.toppings.map(topping => ({ name: topping.name}))
+            ...restRecipeData,
+            modifiers: noEmptyModifiers.map(modifier => ({ name: modifier.name })),
+            toppings: recipeData.toppings.map(topping => ({ name: topping.name})),
+            category: categoryInput?.trim() ? categoryInput : recipeData.category,
         }
+        console.log("Clicking the button!");
+
         addRecipeToDB(modifiedData);
       };
 
@@ -100,14 +130,20 @@ const AddRecipe: React.FC = () => {
                     category: value,
                 }));
             }}
-            placeholder="Välj kategori eller lägg till kategori" 
+            placeholder="Välj kategori" 
             optionFilterProp="children" 
             filterOption={(input, option) =>
             (option?.value as string).toLowerCase().indexOf(input.toLowerCase()) >= 0}
         >
-            {categories}
-          <Select.Option value="demo">Demo</Select.Option>
-        </Select>
+            {categories.map((category) => (
+              <Select.Option value={category} key={category}>
+                {category}
+              </Select.Option>
+            ))}
+            </Select>
+      </Form.Item>
+      <Form.Item label="Lägg till ny kategori">
+        <Input name='categoryInput' value={recipeData.categoryInput} onChange={handleInputChange}/>
       </Form.Item>
       <Form.Item>
       <AddDynamicField 

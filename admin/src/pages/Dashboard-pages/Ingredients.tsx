@@ -12,14 +12,14 @@ const [toppingsData, setToppingsData] = useState<IToppingsData[]>(toppings);
 
   const handleDeleteModifier = async (record: IModifiersData) => {
     try {
-      const response = await fetch(`/api/dashboard/modifiers/${record._id}`, {
+      const response = await fetch(`/api/dashboard/modifiers/${record.name}`, {
         method: 'DELETE'
       });
 
       if(response.ok){
         console.log("Modifier successfully deleted!");
         setModifiersData((prevModifiers) => 
-        prevModifiers.filter((modifier) => modifier._id !== record._id));
+        prevModifiers.filter((modifier) => modifier.name !== record.name));
       } else {
         console.log("Couldn't delete modifier");
       }
@@ -30,14 +30,14 @@ const [toppingsData, setToppingsData] = useState<IToppingsData[]>(toppings);
 
   const handleDeleteTopping = async (record: IToppingsData) => {
     try {
-      const response = await fetch(`/api/dashboard/toppings/${record._id}`, {
+      const response = await fetch(`/api/dashboard/toppings/${record.name}`, {
         method: 'DELETE'
       });
 
       if(response.ok){
         console.log("Topping successfully deleted!")
         setToppingsData((prevModifiers) => 
-        prevModifiers.filter((topping) => topping._id !== record._id));
+        prevModifiers.filter((topping) => topping._id !== record.name));
       } else {
         console.log("Couldn't delete topping");
         
