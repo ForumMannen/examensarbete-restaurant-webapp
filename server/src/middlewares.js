@@ -1,4 +1,4 @@
-const { ModifierModel, ToppingModel } = require("./models/recipe.model");
+const { ModifierModel, ToppingModel, CategoryModel } = require("./models/recipe.model");
 
 function validate(joiSchema) {
     return (req, res, next) => {
@@ -15,13 +15,16 @@ async function createModifier(req, res, next) {
     try {
         const existingModifiers = await Promise.all(
             modifiers.map(async (modifier) => {
-                console.log("Creating modifier:", modifier.name);
+                //console.log("Incoming modifiers: ", modifier.name);
                 const existingModifier = await ModifierModel.findOne({ name: modifier.name });
+                //console.log("Is there a modifier with that name?: ", existingModifier);
                 if (!existingModifier) {
                     const newModifier = new ModifierModel({ name: modifier.name });
                     await newModifier.save();
+                    //console.log("Saved a new modifier to database: ", newModifier);
                     return newModifier
                 }
+                //console.log("There is already a modifier with that name, no item created.");
                 return existingModifier;
             })
         );
@@ -37,19 +40,27 @@ async function createTopping(req, res, next) {
     const { toppings } = req.body;
 
     try {
-        const existingToppings = await Promise.all(
-            toppings.map(async (topping) => {
-                console.log("Creating topping:", topping.name);
-                const existingTopping = await ToppingModel.findOne({ name: topping.name });
-                if (!existingTopping) {
-                    const newTopping = new ToppingModel({ name: topping.name });
-                    await newTopping.save();
-                    return newTopping
-                }
-                return existingTopping;
-            })
-        );
-        req.existingToppings = existingToppings;
+        if (Array.isArray(toppings)) {
+            const existingToppings = await Promise.all(
+                toppings.map(async (topping) => {
+                    //console.log("Incoming toppings: ", topping.name);
+                    const existingTopping = await ToppingModel.findOne({ name: topping.name });
+                    //console.log("Is there a modifier with that name?: ", existingTopping);
+                    if (!existingTopping) {
+                        const newTopping = new ToppingModel({ name: topping.name });
+                        await newTopping.save();
+                        //console.log("Saved a new modifier to database: ", newTopping);
+                        return newTopping
+                    }
+                    //console.log("There is already a topping with that name, no item created.");
+                    return existingTopping;
+                })
+            );
+            req.existingToppings = existingToppings;
+        } else {
+            //console.log("There are no toppings added, so the array is empty!");
+            req.existingToppings = [];
+        }
         next();
     } catch (error) {
         console.error("Error adding new modifiers: ", error);
@@ -57,9 +68,29 @@ async function createTopping(req, res, next) {
     }
 }
 
+async function createCategory(req, res, next) {
+    const { category } = req.body;
+
+    try {
+        const existingCategory = await CategoryModel.findOne({ name: category });
+        if (!existingCategory) {
+            const newCategory = new CategoryModel({ name: category });
+            await newCategory.save();
+            req.existingCategory = newCategory;
+        } else {
+            req.existingCategories = existingCategory;
+        }
+
+        next();
+    } catch (error) {
+        console.error("Error adding new category: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 const deleteItem = (Model) => async (req, res) => {
     try {
-        const item = await Model.findByIdAndDelete(req.params.id);
+        const item = await Model.findOneAndDelete(req.params.name);
         if (!item) {
             return res.status(404).send("Item not found")
         }
@@ -75,4 +106,4 @@ function isLoggedIn(req, res, next) {
     return next();
 }
 
-module.exports = { validate, isLoggedIn, createModifier, createTopping, deleteItem };
+module.exports = { validate, isLoggedIn, createModifier, createTopping, createCategory, deleteItem };

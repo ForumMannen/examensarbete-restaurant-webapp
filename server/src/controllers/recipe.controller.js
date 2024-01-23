@@ -1,4 +1,4 @@
-const { ModifierModel, ToppingModel, RecipeModel, DrinkModel } = require("../models/recipe.model");
+const { ModifierModel, ToppingModel, RecipeModel, DrinkModel, CategoryModel } = require("../models/recipe.model");
 
 async function getDashboardData(req, res) {
     try {
@@ -6,6 +6,7 @@ async function getDashboardData(req, res) {
         let modifiersFromDB = await ModifierModel.find();
         let toppingsFromDB = await ToppingModel.find();
         let drinksFromDB = await DrinkModel.find();
+        let categoriesFromDB = await CategoryModel.find();
 
         if (!recipesFromDB) {
             return res.status(409).send("Couldn't find recipes from database")
@@ -23,7 +24,11 @@ async function getDashboardData(req, res) {
             return res.status(409).send("Couldn't find drinks from database")
         }
 
-        res.status(200).send({ recipesFromDB, modifiersFromDB, toppingsFromDB, drinksFromDB });
+        if (!categoriesFromDB) {
+            return res.status(409).send("Couldn't find categories from database")
+        }
+
+        res.status(200).send({ recipesFromDB, modifiersFromDB, toppingsFromDB, drinksFromDB, categoriesFromDB });
     } catch (error) {
         console.error("Error adding modifier: ", error);
         res.status(500).json({ message: "Internal server error" });
@@ -81,41 +86,44 @@ async function addTopping(req, res) {
 }
 
 async function addRecipe(req, res) {
+    console.log("AddRECIPECONTROLLER");
     const { name, modifiers, toppings, category, price } = req.body;
     try {
-        console.log(name, modifiers, toppings, category, price);
         const recipeExists = await RecipeModel.findOne({ name });
         if (recipeExists) {
             return res.status(409).send("A recipe with that name already exists");
         }
-        const sortedModifiers = modifiers.slice().sort((a, b) => {
-            if (a.name < b.name) return -1;
-            return 1;
-        });
-        console.log("Sorterad modifiers: ", sortedModifiers);
+
+        const sortedModifiers = modifiers.slice().sort((a, b) => a.name.localeCompare(b.name));
+
         const allRecipesModifiers = await RecipeModel.find({}, { _id: 0, modifiers: 1 });
 
-        let recipeDuplicatesExist = false;
-
-        allRecipesModifiers.forEach((recipe) => {
-            const sortedModifiersFromDB = recipe.modifiers.sort((a, b) => {
-                if (a.name < b.name) return -1;
-                return 1;
-            })
-            console.log("Sorterade recipes from DB: ", sortedModifiersFromDB);
-            if (
-                sortedModifiers.length === sortedModifiersFromDB.length &&
-                sortedModifiers.every((value, index) => {
-                    return (
-                        value.name === sortedModifiersFromDB[index].name &&
-                        value.value === sortedModifiersFromDB[index].value
-                    );
-                })
-            ) {
-                recipeDuplicatesExist = true;
-            }
+        const recipeDuplicatesExist = allRecipesModifiers.some((recipe) => {
+            const sortedModifiersFromDB = recipe.modifiers.slice().sort((a, b) => a.name.localeCompare(b.name));
+            return JSON.stringify(sortedModifiers) === JSON.stringify(sortedModifiersFromDB);
         })
-        console.log(recipeDuplicatesExist);
+
+        // let recipeDuplicatesExist = false;
+
+        // allRecipesModifiers.forEach((recipe) => {
+        //     const sortedModifiersFromDB = recipe.modifiers.sort((a, b) => {
+        //         if (a.name < b.name) return -1;
+        //         return 1;
+        //     })
+
+        //     if (
+        //         sortedModifiers.length === sortedModifiersFromDB.length &&
+        //         sortedModifiers.every((value, index) => {
+        //             return (
+        //                 value.name === sortedModifiersFromDB[index].name &&
+        //                 value.value === sortedModifiersFromDB[index].value
+        //             );
+        //         })
+        //     ) {
+        //         recipeDuplicatesExist = true;
+        //     }
+        // })
+
         if (recipeDuplicatesExist) {
             return res.status(409).send("A recipe with that ingredients already exists");
         }
@@ -127,6 +135,7 @@ async function addRecipe(req, res) {
             category,
             price
         });
+
         await recipe.save();
 
         res.sendStatus(201);
@@ -152,4 +161,21 @@ async function addDrink(req, res) {
     }
 }
 
-module.exports = { getDashboardData, getAllDrinks, addModifier, addTopping, addRecipe, addDrink }
+async function addCategory(req, res) {
+    let { name } = req.body;
+
+    try {
+        const category = await CategoryModel.findOne({ name });
+        if (category) {
+            return res.sendStatus(409);
+        }
+        const newCategory = new CategoryModel({ name });
+        await newCategory.save();
+        res.sendStatus(201);
+    } catch (error) {
+        console.error("Error adding category: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+module.exports = { getDashboardData, getAllDrinks, addModifier, addTopping, addRecipe, addDrink, addCategory }
