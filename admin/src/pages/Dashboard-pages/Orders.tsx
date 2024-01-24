@@ -1,6 +1,12 @@
-function Orders() {
+import OrdersTable from "../Dashboard-tables/OrdersTable";
+
+const Orders: React.FC = () => {
+
   return (
-    <div>Orders</div>
+    <div>
+      <h2>Orders</h2>
+      <OrdersTable />
+    </div>
   )
 }
 
