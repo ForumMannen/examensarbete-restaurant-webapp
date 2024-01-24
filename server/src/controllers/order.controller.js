@@ -4,6 +4,21 @@ const { OrderModel } = require("../models/order.model");
 
 const CLIENT_URL = "http://localhost:5173";
 
+async function getOrders(req, res) {
+    try {
+        let ordersFromDB = await OrderModel.find();
+
+        if (!ordersFromDB) {
+            return res.status(409).send("Couldn't find any orders in the database");
+        }
+
+        res.status(200).send({ ordersFromDB });
+    } catch (error) {
+        console.error("Error finding orders: ", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 async function createCheckoutSession(req, res) {
     try {
         const cartItems = Array.isArray(req.body.cartItems.items)
@@ -112,4 +127,4 @@ async function verifyPayment(req, res) {
     }
 }
 
-module.exports = { createCheckoutSession, verifyPayment };
+module.exports = { createCheckoutSession, verifyPayment, getOrders };
