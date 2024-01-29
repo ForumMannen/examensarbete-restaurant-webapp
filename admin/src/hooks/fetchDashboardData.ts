@@ -15,10 +15,11 @@ export interface IRecipesData {
     toppings: IToppingsData[];
     category: string;
     price: number;
+    [key: string]: string | number | IModifiersData[] | IRecipesData[];
 }
 
 export interface IModifiersData {
-    _id: string;
+    _id?: string;
     name: string;
 }
 
@@ -63,7 +64,13 @@ export const useDashboardData = () => {
         const fetchData = async () => {
             try {
                 const data = await fetchDashboardData();
-                if(data.recipesFromDB.length > 0 || data.modifiersFromDB.length > 0 || data.toppingsFromDB.length > 0 || data.drinksFromDB.length > 0 || data.categoriesFromDB){
+                if(
+                    data.recipesFromDB.length > 0 || 
+                    data.modifiersFromDB.length > 0 || 
+                    data.toppingsFromDB.length > 0 || 
+                    data.drinksFromDB.length > 0 || 
+                    data.categoriesFromDB
+                    ){
                     setDashboardData(() => ({
                         recipes: data.recipesFromDB,
                         modifiers: data.modifiersFromDB,
@@ -72,7 +79,7 @@ export const useDashboardData = () => {
                         categories: data.categoriesFromDB
                     }));
                 }
-                // console.log("The hook: ", data.categoriesFromDB)
+                // console.log("The hook: ", data.modifiersFromDB)
             } catch (error) {
                 if(error){
                    console.error(error); 

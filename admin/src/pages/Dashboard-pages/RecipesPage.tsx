@@ -8,12 +8,12 @@ interface RecipesPageProps {
   recipes: IRecipesData[];
 }
 
-const convertData = (recipes: IRecipesData[]): IRecipesData[] => {
-  return recipes.map((recipe) => ({
-    ...recipe,
-    key: recipe._id,
-  }));
-};
+// const convertData = (recipes: IRecipesData[]): IRecipesData[] => {
+//   return recipes.map((recipe) => ({
+//     ...recipe,
+//     key: recipe._id,
+//   }));
+// };
 
 // const RecipesPage: React.FC = () => {
 //   const { dashboardData } = useDashboardData();
@@ -53,7 +53,7 @@ const RecipesPage: React.FC<RecipesPageProps> = ({ recipes }) => {
         categories.map((category) => (
         <div key={category}>
           <h2>{category}</h2>
-          <CategoryTable recipes={convertData(recipes.filter((recipe) => recipe.category === category))} />
+          <CategoryTable />
         </div>
       ))
     ) : (

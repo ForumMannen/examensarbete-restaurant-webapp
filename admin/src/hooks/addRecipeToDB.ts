@@ -1,3 +1,4 @@
+import { IModifiersData } from "./fetchDashboardData";
 export interface Recipe{
     name: string;
     modifiers: { name: string }[];
@@ -29,4 +30,22 @@ export const addRecipeToDB = async (recipe: Recipe) => {
     } catch (error) {
         console.error("Error: ", error);
     }
+}
+
+export const addModifierToDB = async (modifierName: IModifiersData) => {
+    try {
+        const response = await fetch('/api/dashboard/modifiers', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(modifierName),
+        })
+
+        if(response.ok){
+            return modifierName;
+        }
+      } catch (error) {
+        console.error(error);
+      }
 }

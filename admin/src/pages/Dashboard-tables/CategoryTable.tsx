@@ -1,27 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Space, Table, Tag } from 'antd';
+import { useEffect, useState } from 'react';
+import { Space, Table, Tag, Input, Button } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
-import { IRecipesData } from '../../hooks/fetchDashboardData';
+import { IRecipesData, useDashboardData } from '../../hooks/fetchDashboardData';
+import ModifiersColumn from '../../components/ModifiersColumn';
 
-interface CategoryTableProps {
-    recipes: IRecipesData[];
-}
-
-const convertData = (recipes: IRecipesData[]): IRecipesData[] => {
-    return recipes.map((recipe) => ({
-      ...recipe,
-      key: recipe._id,
-    }));
-  };
-
-
-const CategoryTable: React.FC<CategoryTableProps> = ({ recipes }) => {
-    const [data, setData] = useState<IRecipesData[]>(recipes);
+const CategoryTable = () => {
+  const { dashboardData } = useDashboardData();
+   const [data, setData] = useState<IRecipesData[]>([]);
+   const [editingKey, setEditingKey] = useState<string | number | null>(null);
 
     useEffect(() => {
-      setData(recipes);
-    }, [recipes]);
+      setData(dashboardData.recipes);
+    }, [dashboardData]);
 
     const handleDelete = async (record: IRecipesData) => {
       try {
@@ -29,20 +20,44 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ recipes }) => {
           method: 'DELETE',
         });
         if(response.ok){
-          setData((prevData) => {
-            console.log('Previous data:', prevData);
-            const newData = prevData.filter((item) => item._id !== record._id);
-            console.log('New data:', newData);
-            return newData;
-          });
-          console.log(data);
-        } else {
-          console.log("Wasn't able to delete!");
-          
-        }
-
+          setData((prevData) => prevData.filter((item) => item._id !== record._id));
+          } else {
+            console.log("Couldn't delete!"); 
+          }
       } catch (error) {
         console.error("Couldn't delete recipe");
+      }
+    }
+
+    const handleUpdate = async (record: IRecipesData) => {
+      try {
+        setEditingKey(null);
+        const response = await fetch(`/api/dashboard/recipe/${record._id}`, {
+          method: 'PUT',
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(record)
+        });
+        if(response.ok){
+          console.log(response);
+          
+          setEditingKey(null);
+          } else {
+            console.log("Couldn't update!"); 
+          }
+      } catch (error) {
+        console.error("Couldn't update recipe");
+      }
+    }
+
+    const handleModifiersChange = (record: IRecipesData, updatedModifiers: string[]) => {
+      const index = data.findIndex(item => item._id === record._id);
+
+      if(index !== -1){
+        const newData = [...data];
+        newData[index].modifiers = updatedModifiers.map(modifier => ({ name: modifier}));
+        setData(newData);
       }
     }
 
@@ -51,20 +66,35 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ recipes }) => {
           title: 'Namn',
           dataIndex: 'name',
           key: 'name',
-          render: (text) => <a>{text}</a>,
+          render: (text, record) => (
+            editingKey === record._id ? (
+              <Input value={text} onChange={(e) => handleInputChange(e, record, 'name')} />
+            ) : ( 
+              <span>{text}</span>
+            )
+          ),
         },
         {
           title: 'Ingredienser',
           dataIndex: 'modifiers',
           key: 'modifiers',
-          render: (_, { modifiers }) => (
-            <>
-              {modifiers.map((modifier, index) => (
-                <Tag color="blue" key={index}>
-                  {modifier.name}
-                </Tag>
-              ))}
+          render: (_, record) => (
+            editingKey === record._id ? (
+            <ModifiersColumn 
+            modifiers={record.modifiers} 
+            onModifiersChange={(value) => handleModifiersChange(record, value)}
+            />
+            ) : (
+              <>
+              {record.modifiers.map((modifier, index) => {
+                return (
+                  <Tag color="blue" key={index}>
+                    {modifier.name}
+                  </Tag>
+                )
+              })}
             </>
+            )
           )
         },
         {
@@ -85,20 +115,46 @@ const CategoryTable: React.FC<CategoryTableProps> = ({ recipes }) => {
           title: 'Pris',
           dataIndex: 'price',
           key: 'price',
+          render: (text, record) => (
+            <>
+            {editingKey === record._id ? (
+              <Input value={text.toString()} onChange={(e) => handleInputChange(e, record, 'price')} />
+            ) : (
+              <span>{text}</span>
+            )}
+            </>
+          )
         },
         {
           title: 'Uppdatera / Radera recept',
           key: 'action',
           render: (_, record) => (
             <Space size="small">
-              <a><EditOutlined /></a>
+              {editingKey === record._id ? (
+                <>
+                  <Button onClick={() => handleUpdate(record)}>Save</Button>
+                  <Button onClick={() => setEditingKey(null)}>Close</Button>
+                </>
+              ) : (
+                <a onClick={() => setEditingKey(record._id)}><EditOutlined /></a>
+              )}
               <a onClick={() => handleDelete(record)}><DeleteOutlined /></a>
             </Space>
           ),
         },
       ];
 
-      return <Table key={data.length} columns={columns} dataSource={convertData(data)}/>;
+      const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, record: IRecipesData, field: string) => {
+        const newData = [...data];
+        const editingRecordIndex = newData.findIndex((item) => item._id === editingKey);
+
+        if(editingRecordIndex !== -1){
+          newData[editingRecordIndex][field as keyof IRecipesData] = e.target.value !== undefined ? e.target.value.toString() : '';
+          setData(newData);
+        }
+      }
+
+      return <Table columns={columns} dataSource={data} rowKey="_id"/>;
 }
 
 export default CategoryTable;

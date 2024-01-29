@@ -121,3 +121,12 @@ DELETE http://localhost:3000/api/dashboard/drinks/659dac7f7ce59c741ccef054
 
 //Hämta alla ordrar
 GET http://localhost:3000/api/order/get-orders
+
+###
+
+PUT http://localhost:3000/api/dashboard/recipe/65af902a990eb977bfb077ec
+Content-Type: application/json
+
+{
+    "name": "Calzone"
+}

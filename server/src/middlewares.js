@@ -2,7 +2,7 @@ const { ModifierModel, ToppingModel, CategoryModel } = require("./models/recipe.
 
 function validate(joiSchema) {
     return (req, res, next) => {
-        console.log(req.body);
+        console.log("Validate Middleware: ", req.body);
         const validation = joiSchema.validate(req.body);
         if (!validation.error) return next();
         res.status(400).json(validation.error.message);
@@ -15,16 +15,16 @@ async function createModifier(req, res, next) {
     try {
         const existingModifiers = await Promise.all(
             modifiers.map(async (modifier) => {
-                //console.log("Incoming modifiers: ", modifier.name);
+                console.log("Incoming modifiers: ", modifier.name);
                 const existingModifier = await ModifierModel.findOne({ name: modifier.name });
                 //console.log("Is there a modifier with that name?: ", existingModifier);
                 if (!existingModifier) {
                     const newModifier = new ModifierModel({ name: modifier.name });
                     await newModifier.save();
-                    //console.log("Saved a new modifier to database: ", newModifier);
+                    console.log("Saved a new modifier to database: ", newModifier);
                     return newModifier
                 }
-                //console.log("There is already a modifier with that name, no item created.");
+                console.log("There is already a modifier with that name, no item created.");
                 return existingModifier;
             })
         );

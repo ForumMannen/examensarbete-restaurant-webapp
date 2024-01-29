@@ -52,6 +52,7 @@ async function getAllDrinks(req, res) {
 
 async function addModifier(req, res) {
     let { name } = req.body;
+    console.log("addModifier: ", name);
 
     try {
         let modifier = await ModifierModel.findOne({ name });
@@ -102,27 +103,6 @@ async function addRecipe(req, res) {
             const sortedModifiersFromDB = recipe.modifiers.slice().sort((a, b) => a.name.localeCompare(b.name));
             return JSON.stringify(sortedModifiers) === JSON.stringify(sortedModifiersFromDB);
         })
-
-        // let recipeDuplicatesExist = false;
-
-        // allRecipesModifiers.forEach((recipe) => {
-        //     const sortedModifiersFromDB = recipe.modifiers.sort((a, b) => {
-        //         if (a.name < b.name) return -1;
-        //         return 1;
-        //     })
-
-        //     if (
-        //         sortedModifiers.length === sortedModifiersFromDB.length &&
-        //         sortedModifiers.every((value, index) => {
-        //             return (
-        //                 value.name === sortedModifiersFromDB[index].name &&
-        //                 value.value === sortedModifiersFromDB[index].value
-        //             );
-        //         })
-        //     ) {
-        //         recipeDuplicatesExist = true;
-        //     }
-        // })
 
         if (recipeDuplicatesExist) {
             return res.status(409).send("A recipe with that ingredients already exists");
@@ -178,4 +158,26 @@ async function addCategory(req, res) {
     }
 }
 
-module.exports = { getDashboardData, getAllDrinks, addModifier, addTopping, addRecipe, addDrink, addCategory }
+async function updateRecipe(req, res) {
+    let { id } = req.params;
+    const updateFields = req.body;
+    console.log(updateFields);
+
+    try {
+        const updatedRecipe = await RecipeModel.findByIdAndUpdate(id, updateFields, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!updatedRecipe) {
+            return res.status(404).json({ message: "Recipe not found! " });
+        }
+
+        res.status(200).json({ message: "Recipe updated succesfully: ", updatedRecipe })
+    } catch (error) {
+        console.error("Error updating recipe", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+module.exports = { getDashboardData, getAllDrinks, addModifier, addTopping, addRecipe, addDrink, addCategory, updateRecipe }
