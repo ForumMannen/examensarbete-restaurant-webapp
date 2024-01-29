@@ -101,9 +101,32 @@ const deleteItem = (Model) => async (req, res) => {
     }
 }
 
+const updateItem = (Model) => async (req, res) => {
+    try {
+        console.log("What model is used?", Model);
+        console.log("What comes with params?", req.params);
+        const updatedItem = await Model.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true },
+        );
+
+        if (!updatedItem) {
+            return res.status(404).json({ message: "Item not found!" });
+        }
+
+        res.status(200).json(updatedItem);
+        console.log(updatedItem);
+
+    } catch (error) {
+        console.error("Error updating item", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 function isLoggedIn(req, res, next) {
     if (!req.session._id) return res.status(401).send();
     return next();
 }
 
-module.exports = { validate, isLoggedIn, createModifier, createTopping, createCategory, deleteItem };
+module.exports = { validate, isLoggedIn, createModifier, createTopping, createCategory, deleteItem, updateItem };
