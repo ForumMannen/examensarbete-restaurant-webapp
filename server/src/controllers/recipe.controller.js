@@ -178,4 +178,20 @@ async function addCategory(req, res) {
     }
 }
 
-module.exports = { getDashboardData, getAllDrinks, addModifier, addTopping, addRecipe, addDrink, addCategory }
+async function updateDrinks(req, res) {
+    try {
+        const drink = await DrinkModel.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true },
+        );
+
+        res.status(200).json(drink);
+        console.log(drink);
+    } catch (error) {
+        console.error("Error updating drinks", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+module.exports = { getDashboardData, getAllDrinks, addModifier, addTopping, addRecipe, addDrink, addCategory, updateDrinks }

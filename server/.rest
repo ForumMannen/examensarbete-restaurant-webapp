@@ -99,6 +99,16 @@ GET http://localhost:3000/api/dashboard/drinks
 
 ###
 
+//Uppdatera drickor
+PUT http://localhost:3000/api/dashboard/drinks/65b7b18ff8d3bb9c968ec025
+Content-Type: application/json
+
+{
+      "name": "Coca-Cola Zero"
+}
+
+###
+
 //Radera recipe
 DELETE http://localhost:3000/api/dashboard/recipe/659d25f9d6bedfa269216e5f
 
