@@ -11,11 +11,11 @@ export interface IDashboardData {
 export interface IRecipesData {
     _id: string;
     name: string;
-    modifiers: IModifiersData[];
-    toppings: IToppingsData[];
+    modifiers: string[];
+    toppings: string[];
     category: string;
     price: number;
-    [key: string]: string | number | IModifiersData[] | IRecipesData[];
+    // [key: string]: string | number | IModifiersData[] | IRecipesData[];
 }
 
 export interface IModifiersData {
@@ -24,7 +24,7 @@ export interface IModifiersData {
 }
 
 export interface IToppingsData {
-    _id: string;
+    _id?: string;
     name: string;
 }
 

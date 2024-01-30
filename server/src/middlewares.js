@@ -15,11 +15,11 @@ async function createModifier(req, res, next) {
     try {
         const existingModifiers = await Promise.all(
             modifiers.map(async (modifier) => {
-                console.log("Incoming modifiers: ", modifier.name);
-                const existingModifier = await ModifierModel.findOne({ name: modifier.name });
+                console.log("Incoming modifiers: ", modifier);
+                const existingModifier = await ModifierModel.findOne({ name: modifier });
                 //console.log("Is there a modifier with that name?: ", existingModifier);
                 if (!existingModifier) {
-                    const newModifier = new ModifierModel({ name: modifier.name });
+                    const newModifier = new ModifierModel({ name: modifier });
                     await newModifier.save();
                     console.log("Saved a new modifier to database: ", newModifier);
                     return newModifier
@@ -44,10 +44,10 @@ async function createTopping(req, res, next) {
             const existingToppings = await Promise.all(
                 toppings.map(async (topping) => {
                     //console.log("Incoming toppings: ", topping.name);
-                    const existingTopping = await ToppingModel.findOne({ name: topping.name });
+                    const existingTopping = await ToppingModel.findOne({ name: topping });
                     //console.log("Is there a modifier with that name?: ", existingTopping);
                     if (!existingTopping) {
-                        const newTopping = new ToppingModel({ name: topping.name });
+                        const newTopping = new ToppingModel({ name: topping });
                         await newTopping.save();
                         //console.log("Saved a new modifier to database: ", newTopping);
                         return newTopping

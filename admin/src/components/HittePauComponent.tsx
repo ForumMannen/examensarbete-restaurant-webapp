@@ -1,109 +1,122 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Divider, Input, Select, Space, Button } from 'antd';
 import type { InputRef } from 'antd';
-import type { IModifiersData } from '../hooks/fetchDashboardData';
-import { useDashboardData } from '../hooks/fetchDashboardData';
+import { fetchDashboardData, useDashboardData } from '../hooks/fetchDashboardData';
 import { addModifierToDB } from '../hooks/addRecipeToDB';
 
 interface ModifiersColumnProps {
-  modifiers: IModifiersData[];
-  onModifiersChange: (updatedModifiers: IModifiersData[]) => void;
-}
-
-interface SelectedItem {
-  name: string;
+  modifierIds: string[];
+  onModifiersChange: (updatedModifiers: string[]) => void;
 }
 
 const HittePauComponent: React.FC<ModifiersColumnProps> = ({
-  modifiers: selectedModifiers,
+  modifierIds: selectedModifiers,
   onModifiersChange,
 }) => {
   const { dashboardData } = useDashboardData();
-  const { modifiers: allModifiers } = dashboardData;
-  const [items, setItems] = useState<IModifiersData[]>(selectedModifiers);
-  const [availableModifiers, setAvailableModifiers] = useState<IModifiersData[]>(allModifiers);
+  //Recipes id's
+  const [selectedModifierIds, setSelectedModifierIds] = useState<string[]>(selectedModifiers);
+  // const [addedModifiers, setAddedModifiers] = useState<IModifiersData[]>([]);
   const [name, setName] = useState('');
   const inputRef = useRef<InputRef>(null);
 
-  useEffect(() => {
-    if(dashboardData && dashboardData.modifiers){
-      setAvailableModifiers(dashboardData.modifiers)
-    }
-  }, [dashboardData]);
+  // console.log("selected modifiers: ", selectedModifierIds);
 
   // useEffect(() => {
-  //   const filteredModifiers = availableModifiers.filter(modifier => !items.find(item => item._id === modifier._id));
-  //   setAvailableModifiers(filteredModifiers);
-  // }, [items]);
+  //   // console.log("added modifiers: ", addedModifiers);
+  // }, [addedModifiers])
+
+  if (!dashboardData?.modifiers) {
+    return <div>Loading...</div>
+  }
+
+  const allModifiers = dashboardData.modifiers;
+  console.log("All modifiers", allModifiers);
+
+
+  const availableModifiers = allModifiers.filter(modifier => !selectedModifierIds.find(id => id === modifier._id));
+  // console.log("Available modifiers", availableModifiers);
 
   const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+    // console.log("This shouldn't show when entering edit mode");
+
     e.preventDefault();
-    if(name.trim() !== ''){
+    if (name.trim() !== '') {
       try {
         const addedModifier = await addModifierToDB({ name })
-        
-        if(!addedModifier){
+
+        if (!addedModifier) {
           return console.log("Couldn't add modifier");
         }
-        
-        setItems(prevItems => [...prevItems, addedModifier]);
+
+        const updatedDashboardData = await fetchDashboardData();
+        console.log(updatedDashboardData);
+
+
+        // setAddedModifiers(prevItems => [...prevItems, addedModifier]);
+
+        // setSelectedModifierIds(prevItems => [...prevItems, addedModifier._id!]);
+        setName('');
+
       } catch (error) {
         console.error(error);
       }
     }
   };
 
-  const handleChange = (selectedValues: SelectedItem[]) => {
-    console.log("Handle Change: ", selectedValues);
-    const selectedItems = availableModifiers.filter(modifier => {
-      if(typeof modifier === 'string'){
-        return selectedValues.includes(modifier);
-      } else {
-        return selectedValues.some(selected => selected.name === modifier.name)
-      }
-    });
-    console.log("Selected items: ", selectedItems);
-    
-    
-    // setAvailableModifiers(prevModifiers => {
-    //   return prevModifiers.filter(modifier => !selectedValues.includes(modifier.name ?? '')); 
-    // });
-
-    // setAvailableModifiers(prevModifiers => prevModifiers.filter(modifier => !selectedValues.includes(modifier.name ?? '')));
-
-    setItems(prevItems => {
-      const mergedItems = [...prevItems, ...selectedItems];
-      return Array.from(new Set(mergedItems));
-    });
-    onModifiersChange(selectedItems);
+  const handleChange = (selectedValues: string[]) => {
+    setSelectedModifierIds(selectedValues);
+    onModifiersChange(selectedValues);
   };
+
+  // const handleChange = (selectedValues: string[]) => {
+  //   console.log("Handle Change: ", selectedValues);
+  //   const selectedItems = availableModifiers.filter(modifier => {
+  //     return selectedValues.some(selected => selected === modifier._id)
+  //   });
+
+  //   const selectedIds = selectedItems.map(item => item._id!);
+  //   setSelectedModifierIds(prevItems => {
+  //     return [...prevItems, ...selectedIds];
+  //   });
+  //   onModifiersChange(selectedIds);
+  // };
 
   const handleDeselect = (value: string) => {
     console.log(value);
-    
-    const deselectItem = items.find(item => item.name === value);
-
-    if(deselectItem){
-      const updatedItems = items.filter(item => item.name !== value);
-      setItems(updatedItems);
-
-      setAvailableModifiers(prevModifiers => [...prevModifiers, deselectItem]); 
-    }
+    const updatedItems = selectedModifierIds.filter(item => item !== value);
+    setSelectedModifierIds(updatedItems);
+    onModifiersChange(updatedItems);
   }
 
-  useEffect(() => {
-    console.log("Available modifiers: ", availableModifiers);
-    
-    console.log("Items State", items);
-  }, [items])
+  // const getModifierName = (id: string) => {
+  //   const modifier = dashboardData.modifiers.find(m => m._id === id);
+  //   return modifier?.name || "Unknown";
+  // }
+
+  const getModifierName = (id: string) => {
+    // console.log("Id in getModifierName", id);
+
+    const modifierInDashboardData = dashboardData.modifiers.find(m => m._id === id);
+    // return modifierInDashboardData?.name || "Unknown";
+    console.log(modifierInDashboardData);
+
+    if (modifierInDashboardData) {
+      console.log("This should stop the function.");
+
+      return modifierInDashboardData.name;
+    }
+    console.log("And this shouldn't show.");
+    return "Unknown";
+  };
 
   return (
     <Select
       style={{ width: 300 }}
       placeholder="custom dropdown render"
       mode='multiple'
-      value={items.map(modifier => modifier.name)}
+      value={selectedModifierIds.map(id => getModifierName(id))}
       onChange={handleChange}
       onDeselect={handleDeselect}
       dropdownRender={(menu) => (

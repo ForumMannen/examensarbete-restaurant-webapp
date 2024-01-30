@@ -88,19 +88,23 @@ async function addTopping(req, res) {
 
 async function addRecipe(req, res) {
     console.log("AddRECIPECONTROLLER");
-    const { name, modifiers, toppings, category, price } = req.body;
+    const { name, toppings, category, price } = req.body;
     try {
         const recipeExists = await RecipeModel.findOne({ name });
         if (recipeExists) {
             return res.status(409).send("A recipe with that name already exists");
         }
 
-        const sortedModifiers = modifiers.slice().sort((a, b) => a.name.localeCompare(b.name));
+        const modifierIds = req.existingModifiers.map(modifier => modifier._id.toString());
 
+        const sortedModifiers = modifierIds.slice().sort((a, b) => a.localeCompare(b));
+
+        console.log("sortedModifiers: ", sortedModifiers);
         const allRecipesModifiers = await RecipeModel.find({}, { _id: 0, modifiers: 1 });
 
         const recipeDuplicatesExist = allRecipesModifiers.some((recipe) => {
-            const sortedModifiersFromDB = recipe.modifiers.slice().sort((a, b) => a.name.localeCompare(b.name));
+            const sortedModifiersFromDB = recipe.modifiers.slice().sort((a, b) => a.localeCompare(b));
+            console.log("fromDB: ", sortedModifiersFromDB);
             return JSON.stringify(sortedModifiers) === JSON.stringify(sortedModifiersFromDB);
         })
 
@@ -108,10 +112,12 @@ async function addRecipe(req, res) {
             return res.status(409).send("A recipe with that ingredients already exists");
         }
 
+        const toppingIds = req.existingToppings.map(topping => topping._id);
+
         const recipe = new RecipeModel({
             name,
-            modifiers,
-            toppings,
+            modifiers: modifierIds,
+            toppings: toppingIds,
             category,
             price
         });

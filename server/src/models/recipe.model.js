@@ -1,4 +1,4 @@
-const { Schema, model, models } = require("mongoose");
+const { Schema, model, models, Types } = require("mongoose");
 const Joi = require("joi");
 
 
@@ -45,11 +45,8 @@ const CategoryCreateValidationSchema = Joi.object({
 
 const RecipesSchema = new Schema({
     name: { type: String, required: true },
-    modifiers: {
-        type: [ModifiersSchema],
-        _id: false
-    },
-    toppings: [ToppingsSchema],
+    modifiers: [String],
+    toppings: [String],
     category: { type: String, required: true },
     price: { type: Number, required: true },
 })
@@ -58,8 +55,8 @@ const RecipeModel = models.recipe || model("recipes", RecipesSchema);
 
 const RecipeCreateValidationSchema = Joi.object({
     name: Joi.string().required(),
-    modifiers: Joi.array().items(ModifierCreateValidationSchema).min(1).required(),
-    toppings: Joi.array().items(ToppingCreateValidationSchema),
+    modifiers: Joi.array().items(Joi.string()).min(1).required(),
+    toppings: Joi.array().items(Joi.string()),
     category: Joi.string().required(),
     price: Joi.number().required()
 });

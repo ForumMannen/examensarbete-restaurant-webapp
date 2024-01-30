@@ -61,22 +61,11 @@ POST http://localhost:3000/api/dashboard/recipe
 Content-Type: application/json
 
 {
-    "name": "Gyros Special",
-    "modifiers": [
-        {
-            "name": "Gyros"
-        },
-        {
-            "name": "Lök"
-        }
-    ],
-    "toppings": [
-        {
-            "name": "Pommes"
-        }
-    ],
-    "category": "Pizza 3",
-    "price": 120
+    "name": "Kattens special",
+    "modifiers": ["Tonfisk"],
+    "toppings": [],
+    "category": "Pizza 1",
+    "price": 95
 }
 
 ###
