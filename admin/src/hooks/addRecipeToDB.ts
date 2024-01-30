@@ -43,7 +43,7 @@ export const addModifierToDB = async (modifierName: IModifiersData) => {
         })
 
         if(response.ok){
-            return modifierName;
+            return response.json();
         }
       } catch (error) {
         console.error(error);
@@ -61,7 +61,7 @@ export const addToppingToDB = async (toppingName: IToppingsData) => {
         })
 
         if(response.ok){
-            return toppingName;
+            return response.json();
         }
       } catch (error) {
         console.error(error);

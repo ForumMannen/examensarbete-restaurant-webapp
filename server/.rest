@@ -61,10 +61,10 @@ POST http://localhost:3000/api/dashboard/recipe
 Content-Type: application/json
 
 {
-    "name": "Kattens special",
-    "modifiers": ["Tonfisk"],
+    "name": "Bolognese",
+    "modifiers": ["Köttfärssås"],
     "toppings": [],
-    "category": "Pizza 1",
+    "category": "Pizza 2",
     "price": 95
 }
 

@@ -60,35 +60,44 @@ export const useDashboardData = () => {
         categories: [],
     });
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await fetchDashboardData();
-                if(
-                    data.recipesFromDB.length > 0 || 
-                    data.modifiersFromDB.length > 0 || 
-                    data.toppingsFromDB.length > 0 || 
-                    data.drinksFromDB.length > 0 || 
-                    data.categoriesFromDB
-                    ){
-                    setDashboardData(() => ({
-                        recipes: data.recipesFromDB,
-                        modifiers: data.modifiersFromDB,
-                        toppings: data.toppingsFromDB,
-                        drinks: data.drinksFromDB,
-                        categories: data.categoriesFromDB
-                    }));
-                }
-                // console.log("The hook: ", data.modifiersFromDB)
-            } catch (error) {
-                if(error){
-                   console.error(error); 
-                }
-            }
-        };
+    const [isLoading, setIsLoading] = useState(true);
 
+    const fetchData = async () => {
+        setIsLoading(true);
+        try {
+            const data = await fetchDashboardData();
+            if(
+                data.recipesFromDB.length > 0 || 
+                data.modifiersFromDB.length > 0 || 
+                data.toppingsFromDB.length > 0 || 
+                data.drinksFromDB.length > 0 || 
+                data.categoriesFromDB
+                ){
+                setDashboardData(() => ({
+                    recipes: data.recipesFromDB,
+                    modifiers: data.modifiersFromDB,
+                    toppings: data.toppingsFromDB,
+                    drinks: data.drinksFromDB,
+                    categories: data.categoriesFromDB
+                }));
+            }
+            // console.log("The hook: ", data.modifiersFromDB)
+        } catch (error) {
+            if(error){
+               console.error(error); 
+            }
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchData();
     }, []);
 
-    return { dashboardData };
+    return { 
+        dashboardData,
+        refetch: fetchData,
+        isLoading
+    };
 }

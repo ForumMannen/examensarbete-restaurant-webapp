@@ -52,7 +52,6 @@ async function getAllDrinks(req, res) {
 
 async function addModifier(req, res) {
     let { name } = req.body;
-    console.log("addModifier: ", name);
 
     try {
         let modifier = await ModifierModel.findOne({ name });
@@ -62,7 +61,7 @@ async function addModifier(req, res) {
 
         modifier = new ModifierModel(req.body);
         await modifier.save();
-        res.sendStatus(201);
+        res.status(201).json({ modifier });
     } catch (error) {
         console.error("Error adding modifier: ", error);
         res.status(500).json({ message: "Internal server error" });
@@ -79,7 +78,7 @@ async function addTopping(req, res) {
         }
         topping = new ToppingModel(req.body);
         await topping.save();
-        res.sendStatus(201);
+        res.status(201).json({ topping });
     } catch (error) {
         console.error("Error adding modifier: ", error);
         res.status(500).json({ message: "Internal server error" });
@@ -87,7 +86,6 @@ async function addTopping(req, res) {
 }
 
 async function addRecipe(req, res) {
-    console.log("AddRECIPECONTROLLER");
     const { name, toppings, category, price } = req.body;
     try {
         const recipeExists = await RecipeModel.findOne({ name });
@@ -99,12 +97,10 @@ async function addRecipe(req, res) {
 
         const sortedModifiers = modifierIds.slice().sort((a, b) => a.localeCompare(b));
 
-        console.log("sortedModifiers: ", sortedModifiers);
         const allRecipesModifiers = await RecipeModel.find({}, { _id: 0, modifiers: 1 });
 
         const recipeDuplicatesExist = allRecipesModifiers.some((recipe) => {
             const sortedModifiersFromDB = recipe.modifiers.slice().sort((a, b) => a.localeCompare(b));
-            console.log("fromDB: ", sortedModifiersFromDB);
             return JSON.stringify(sortedModifiers) === JSON.stringify(sortedModifiersFromDB);
         })
 
@@ -114,11 +110,13 @@ async function addRecipe(req, res) {
 
         const toppingIds = req.existingToppings.map(topping => topping._id);
 
+        const categoryId = req.existingCategories._id;
+
         const recipe = new RecipeModel({
             name,
             modifiers: modifierIds,
             toppings: toppingIds,
-            category,
+            category: categoryId,
             price
         });
 
@@ -167,7 +165,6 @@ async function addCategory(req, res) {
 async function updateRecipe(req, res) {
     let { id } = req.params;
     const updateFields = req.body;
-    console.log(updateFields);
 
     try {
         const updatedRecipe = await RecipeModel.findByIdAndUpdate(id, updateFields, {

@@ -76,7 +76,7 @@ async function createCategory(req, res, next) {
         if (!existingCategory) {
             const newCategory = new CategoryModel({ name: category });
             await newCategory.save();
-            req.existingCategory = newCategory;
+            req.existingCategories = newCategory;
         } else {
             req.existingCategories = existingCategory;
         }

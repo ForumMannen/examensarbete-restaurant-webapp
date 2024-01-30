@@ -1,128 +1,95 @@
 import React, { useState, useRef } from 'react';
-import { Select, Tag, Input, Button, Divider, Space } from 'antd';
-import { useDashboardData } from '../hooks/fetchDashboardData';
-import type { IModifiersData } from '../hooks/fetchDashboardData';
-import type { SelectProps } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { addModifierToDB } from '../hooks/addRecipeToDB';
+import { Divider, Input, Select, Space, Button } from 'antd';
 import type { InputRef } from 'antd';
+import { IModifiersData, useDashboardData } from '../hooks/fetchDashboardData';
+import { addModifierToDB } from '../hooks/addRecipeToDB';
 
 interface ModifiersColumnProps {
-  modifiers: IModifiersData[];
-  onModifiersChange: (value: string[]) => void;
+  modifierIds: string[];
+  onModifiersChange: (updatedModifiers: string[]) => void;
 }
 
-type TagRender = SelectProps['tagRender'];
-
 const ModifiersColumn: React.FC<ModifiersColumnProps> = ({
-  modifiers: selectedModifiers,
+  modifierIds: selectedModifiers,
   onModifiersChange,
 }) => {
-  const { dashboardData } = useDashboardData();
-  const { modifiers: availableModifiers } = dashboardData;
-  // const [name, setName] = useState<string>('');
+  const { dashboardData, isLoading } = useDashboardData();
+  //Recipes id's
+  const [selectedModifierIds, setSelectedModifierIds] = useState<string[]>(selectedModifiers);
+  const [addedModifiers, setAddedModifiers] = useState<IModifiersData[]>([]);
+  const [name, setName] = useState('');
   const inputRef = useRef<InputRef>(null);
-  //const [items, setItems] = useState([]);
-  // const allModifiers = [...selectedModifiers, ...availableModifiers];
-  // const selectedValues = selectedModifiers.map((modifier) => modifier.name);
 
-  // const uniqueModifiers = Array.from(new Set(allModifiers.map((modifier) => modifier._id)))
-  // .map((id) => allModifiers.find((modifier) => modifier._id === id));
-
-  const unselectedModifiers = availableModifiers.filter((modifier) => !selectedModifiers.some((selected) => selected._id === modifier._id));
-
-  const [newItemName, setNewItemName] = useState<string>('');
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewItemName(e.target.value);
+  if (isLoading) {
+    return "";
   }
 
-  // const handleAddItem = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-  //   e.preventDefault();
-  //   try {
-  //     const addedModifier = await addModifierToDB(newItemName);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  //   setNewItemName([...items, name || `New item ${index++}`]);
-  //   setNewItemName('');
-  //   setTimeout(() => {
-  //     inputRef.current?.focus();
-  //   }, 0);
-  // }
+  const allModifiers = [...dashboardData.modifiers, ...addedModifiers];
 
-  const handleAddItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+  const addItem = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
     e.preventDefault();
-    if(newItemName.trim() !== ''){
+    if (name.trim() !== '') {
       try {
-        const addedModifier = await addModifierToDB({ name: newItemName });
-        const updatedSelectedModifiers = [...selectedModifiers, addedModifier];
-        
-        
-        onModifiersChange(updatedSelectedModifiers.map((modifier) => modifier!.name));
-        setNewItemName('');
-        setTimeout(() => {
-          inputRef.current?.focus();
-        }, 0);
+        const { modifier } = await addModifierToDB({ name })
+
+        if (!modifier) {
+          return console.log("Couldn't add modifier");
+        }
+
+        setAddedModifiers([...addedModifiers, modifier]);
+
+        setSelectedModifierIds([...selectedModifierIds, modifier._id!]);
+        setName('');
+
       } catch (error) {
         console.error(error);
       }
     }
-  }
-
-  const tagRender: TagRender = (props) => {
-    const { label, closable, onClose } = props;
-    const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
-      event.preventDefault();
-      event.stopPropagation();
-    };
-  
-    return (
-      <Tag
-        color="green"
-        onMouseDown={onPreventMouseDown}
-        closable={closable}
-        onClose={onClose}
-        style={{ marginRight: 3 }}
-      >
-        {label}
-      </Tag>
-    );
   };
 
-    return (
-      <Select
-        mode="multiple" 
-        tagRender={tagRender}
-        style={{ width: '300' }}
-        placeholder="Ingredienser"
-        onChange={(value) => onModifiersChange(value)}
-        value={selectedModifiers.map((modifier) => modifier.name)}
-        dropdownRender={(menu) => (
-          <>
-            {menu}
-            <Divider style={{ margin: '8px 0'}}/>
-            <Space style={{ padding: '0 8px 4px' }}>
-              <Input 
-                ref={inputRef} 
-                value={newItemName} 
-                onChange={handleInputChange} 
-                onKeyDown={(e) => e.stopPropagation()}
-              />
-              <Button type='text' onClick={handleAddItem} icon={<PlusOutlined />}>
-                Lägg till
-              </Button>
-            </Space>
-          </>
-        )}
-      >
-        {unselectedModifiers.map(modifier => (
-          <Select.Option key={modifier._id} value={modifier.name} label={modifier.name}>
-            {modifier.name}
-          </Select.Option>
-        ))}
-      </Select>
-    );
+  const handleChange = (selectedValues: string[]) => {
+    setSelectedModifierIds(selectedValues);
+    onModifiersChange(selectedValues);
+  };
+
+  const handleDeselect = (value: string) => {
+    const updatedItems = selectedModifierIds.filter(item => item !== value);
+    setSelectedModifierIds(updatedItems);
+    onModifiersChange(updatedItems);
+  }
+
+  const selectOptions = allModifiers.map(modifier => ({ value: modifier._id, label: modifier.name }))
+
+  return (
+    <Select
+      style={{ width: 300 }}
+      placeholder="Lägg till ingrediens"
+      mode='multiple'
+      options={selectOptions}
+      value={selectedModifierIds}
+      onChange={handleChange}
+      onDeselect={handleDeselect}
+      dropdownRender={(menu) => (
+        <>
+          {menu}
+          <Divider style={{ margin: '8px 0' }} />
+          <Space style={{ padding: '0 8px 4px' }}>
+            <Input
+              placeholder="Ny ingrediens"
+              ref={inputRef}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => e.stopPropagation()}
+            />
+            <Button type="text" icon={<PlusOutlined />} onClick={addItem}>
+              Lägg till
+            </Button>
+          </Space>
+        </>
+      )}
+    />
+  );
 };
 
 export default ModifiersColumn;
