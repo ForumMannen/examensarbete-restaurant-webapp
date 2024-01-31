@@ -61,7 +61,7 @@ async function addModifier(req, res) {
 
         modifier = new ModifierModel(req.body);
         await modifier.save();
-        res.sendStatus(201);
+        res.status(201).json({ modifier });
     } catch (error) {
         console.error("Error adding modifier: ", error);
         res.status(500).json({ message: "Internal server error" });
@@ -78,7 +78,7 @@ async function addTopping(req, res) {
         }
         topping = new ToppingModel(req.body);
         await topping.save();
-        res.sendStatus(201);
+        res.status(201).json({ topping });
     } catch (error) {
         console.error("Error adding modifier: ", error);
         res.status(500).json({ message: "Internal server error" });
@@ -86,53 +86,37 @@ async function addTopping(req, res) {
 }
 
 async function addRecipe(req, res) {
-    console.log("AddRECIPECONTROLLER");
-    const { name, modifiers, toppings, category, price } = req.body;
+    const { name, toppings, category, price } = req.body;
     try {
         const recipeExists = await RecipeModel.findOne({ name });
         if (recipeExists) {
             return res.status(409).send("A recipe with that name already exists");
         }
 
-        const sortedModifiers = modifiers.slice().sort((a, b) => a.name.localeCompare(b.name));
+        const modifierIds = req.existingModifiers.map(modifier => modifier._id.toString());
+
+        const sortedModifiers = modifierIds.slice().sort((a, b) => a.localeCompare(b));
 
         const allRecipesModifiers = await RecipeModel.find({}, { _id: 0, modifiers: 1 });
 
         const recipeDuplicatesExist = allRecipesModifiers.some((recipe) => {
-            const sortedModifiersFromDB = recipe.modifiers.slice().sort((a, b) => a.name.localeCompare(b.name));
+            const sortedModifiersFromDB = recipe.modifiers.slice().sort((a, b) => a.localeCompare(b));
             return JSON.stringify(sortedModifiers) === JSON.stringify(sortedModifiersFromDB);
         })
-
-        // let recipeDuplicatesExist = false;
-
-        // allRecipesModifiers.forEach((recipe) => {
-        //     const sortedModifiersFromDB = recipe.modifiers.sort((a, b) => {
-        //         if (a.name < b.name) return -1;
-        //         return 1;
-        //     })
-
-        //     if (
-        //         sortedModifiers.length === sortedModifiersFromDB.length &&
-        //         sortedModifiers.every((value, index) => {
-        //             return (
-        //                 value.name === sortedModifiersFromDB[index].name &&
-        //                 value.value === sortedModifiersFromDB[index].value
-        //             );
-        //         })
-        //     ) {
-        //         recipeDuplicatesExist = true;
-        //     }
-        // })
 
         if (recipeDuplicatesExist) {
             return res.status(409).send("A recipe with that ingredients already exists");
         }
 
+        const toppingIds = req.existingToppings.map(topping => topping._id);
+
+        const categoryId = req.existingCategories._id;
+
         const recipe = new RecipeModel({
             name,
-            modifiers,
-            toppings,
-            category,
+            modifiers: modifierIds,
+            toppings: toppingIds,
+            category: categoryId,
             price
         });
 
@@ -178,4 +162,25 @@ async function addCategory(req, res) {
     }
 }
 
-module.exports = { getDashboardData, getAllDrinks, addModifier, addTopping, addRecipe, addDrink, addCategory }
+async function updateRecipe(req, res) {
+    let { id } = req.params;
+    const updateFields = req.body;
+
+    try {
+        const updatedRecipe = await RecipeModel.findByIdAndUpdate(id, updateFields, {
+            new: true,
+            runValidators: true,
+        });
+
+        if (!updatedRecipe) {
+            return res.status(404).json({ message: "Recipe not found! " });
+        }
+
+        res.status(200).json({ message: "Recipe updated succesfully: ", updatedRecipe })
+    } catch (error) {
+        console.error("Error updating recipe", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+module.exports = { getDashboardData, getAllDrinks, addModifier, addTopping, addRecipe, addDrink, addCategory, updateRecipe }
