@@ -51,7 +51,7 @@ POST http://localhost:3000/api/dashboard/toppings
 Content-Type: application/json
 
 {
-    "name": "Svag sås"
+    "name": "Kantarell"
 }
 
 ###
@@ -85,6 +85,16 @@ Content-Type: application/json
 
 //Hämta alla drickor
 GET http://localhost:3000/api/dashboard/drinks
+
+###
+
+//Uppdatera drickor
+PUT http://localhost:3000/api/dashboard/modifiers/65b763c4b936d2e9f03a7db2
+Content-Type: application/json
+
+{
+      "name": "Sallad"
+}
 
 ###
 
