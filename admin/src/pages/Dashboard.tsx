@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {
   BarChartOutlined,
-  CloudUploadOutlined,
+  CoffeeOutlined,
   PayCircleOutlined,
   UserOutlined,
   UnorderedListOutlined,
@@ -14,7 +14,7 @@ import { Layout, Menu, theme } from 'antd';
 //Import Pages within the Dashboard
 import RecipesPage from './Dashboard-pages/RecipesPage';
 import Ingredients from './Dashboard-pages/Ingredients';
-import OnlineMenu from './Dashboard-pages/OnlineMenu';
+import Drinks from './Dashboard-pages/Drinks';
 import Orders from './Dashboard-pages/Orders';
 import Payments from './Dashboard-pages/Payments';
 import UsersPage from './Dashboard-pages/UsersPage';
@@ -26,13 +26,13 @@ import { useDashboardData } from '../hooks/fetchDashboardData';
 const { Content, Sider } = Layout;
 
 //Change depending on what kind of customer
-const NavItems = ["Recept", "Ingredienser", "OnlineMenu", "Orders", "Payments", "Users", "Settings"];
+const NavItems = ["Recept", "Ingredienser", "Drycker", "Orders", "Payments", "Users", "Settings"];
 
 const Dashboard: React.FC = () => {
   const [selectedNavItem, setSelectedNavItem] = useState<string>(NavItems[0]);
   // const { logoutAdmin } = useAdminContext();
   const { dashboardData } = useDashboardData();
-  const { recipes, modifiers, toppings } = dashboardData;
+  const { recipes, modifiers, toppings, drinks } = dashboardData;
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -47,8 +47,8 @@ const Dashboard: React.FC = () => {
         return <RecipesPage recipes={recipes} />;
       case 'Ingredienser':
         return <Ingredients modifiers={modifiers} toppings={toppings} />;
-      case 'OnlineMenu':
-        return <OnlineMenu />;
+      case 'Drycker':
+        return <Drinks drinks={drinks} />;
       case 'Orders':
         return <Orders />;
       case 'Payments':
@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
   const items: MenuProps['items'] = [
     UnorderedListOutlined,
     UnorderedListOutlined,
-    CloudUploadOutlined,
+    CoffeeOutlined,
     BarChartOutlined,
     PayCircleOutlined,
     UserOutlined,
