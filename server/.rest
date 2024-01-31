@@ -113,6 +113,7 @@ GET http://localhost:3000/api/order/get-orders
 
 ###
 
+// Uppdatera recept, ändra route och lägg till rätt id så fungerar det även för modifiers, toppings och drinks.
 PUT http://localhost:3000/api/dashboard/recipe/65af902a990eb977bfb077ec
 Content-Type: application/json
 
