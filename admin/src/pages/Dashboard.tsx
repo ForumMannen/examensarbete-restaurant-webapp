@@ -44,19 +44,19 @@ const Dashboard: React.FC = () => {
   const getPageComponent = (selected: string) => {
     switch (selected) {
       case 'Recept':
-        return <RecipesPage recipes={recipes}/>;
-        case 'Ingredienser':
-          return <Ingredients modifiers={modifiers} toppings={toppings}/>;
-          case 'OnlineMenu':
-            return <OnlineMenu />;
-            case 'Orders':
-              return <Orders />;
-              case 'Payments':
-                return <Payments />;
-                case 'Users':
-                  return <UsersPage />;
-                  case 'Settings':
-                    return <Settings />;
+        return <RecipesPage recipes={recipes} />;
+      case 'Ingredienser':
+        return <Ingredients modifiers={modifiers} toppings={toppings} />;
+      case 'OnlineMenu':
+        return <OnlineMenu />;
+      case 'Orders':
+        return <Orders />;
+      case 'Payments':
+        return <Payments />;
+      case 'Users':
+        return <UsersPage />;
+      case 'Settings':
+        return <Settings />;
       default:
         return null;
     }
@@ -93,7 +93,7 @@ const Dashboard: React.FC = () => {
               cursor: 'pointer',
               fontSize: '16px',
             }}
-            // onClick={logoutAdmin}
+          // onClick={logoutAdmin}
           >
             Logout
           </button>
@@ -134,7 +134,7 @@ const Dashboard: React.FC = () => {
 //       console.error(error);
 //     }
 //   }
-  
+
 //   return (
 //     <div>
 //       <button onClick={handleLogout}>Logga ut!</button>

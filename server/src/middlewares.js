@@ -15,11 +15,11 @@ async function createModifier(req, res, next) {
     try {
         const existingModifiers = await Promise.all(
             modifiers.map(async (modifier) => {
-                console.log("Incoming modifiers: ", modifier);
-                const existingModifier = await ModifierModel.findOne({ name: modifier });
+                console.log("Incoming modifiers: ", modifier.name);
+                const existingModifier = await ModifierModel.findOne({ name: modifier.name });
                 //console.log("Is there a modifier with that name?: ", existingModifier);
                 if (!existingModifier) {
-                    const newModifier = new ModifierModel({ name: modifier });
+                    const newModifier = new ModifierModel({ name: modifier.name });
                     await newModifier.save();
                     console.log("Saved a new modifier to database: ", newModifier);
                     return newModifier
@@ -80,7 +80,6 @@ async function createCategory(req, res, next) {
         } else {
             req.existingCategories = existingCategory;
         }
-
         next();
     } catch (error) {
         console.error("Error adding new category: ", error);
@@ -103,8 +102,6 @@ const deleteItem = (Model) => async (req, res) => {
 
 const updateItem = (Model) => async (req, res) => {
     try {
-        console.log("What model is used?", Model);
-        console.log("What comes with params?", req.params);
         const updatedItem = await Model.findByIdAndUpdate(
             req.params.id,
             req.body,

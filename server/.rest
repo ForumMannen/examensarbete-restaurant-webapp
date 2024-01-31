@@ -41,7 +41,7 @@ POST http://localhost:3000/api/dashboard/modifiers
 Content-Type: application/json
 
 {
-    "name": "Skinka"
+    "name": "Ost"
 }
 
 ###
