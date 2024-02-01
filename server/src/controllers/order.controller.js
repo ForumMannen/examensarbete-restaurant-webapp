@@ -4,6 +4,7 @@ const { OrderModel } = require("../models/order.model");
 
 const CLIENT_URL = "http://localhost:5173";
 
+//Getting all successful orders from the database
 async function getOrders(req, res) {
     try {
         let ordersFromDB = await OrderModel.find();
@@ -19,6 +20,9 @@ async function getOrders(req, res) {
     }
 }
 
+//Stripe doesn't hold any products, therefore this function first
+//creates a price for Stripe and if it succeds it will create a 
+//checkout session. 
 async function createCheckoutSession(req, res) {
     try {
         const cartItems = Array.isArray(req.body.cartItems.items)
@@ -66,23 +70,23 @@ async function createCheckoutSession(req, res) {
     }
 }
 
+//If the checkout session redirects to the success_url this function will verify the
+//payment. And if it's paid it will save the order to the database and fetch 'name' and 
+//'email' of the customer from Stripe.
 async function verifyPayment(req, res) {
     try {
-        console.log("VERIFY PAYMENT!")
         const session = await stripe.checkout.sessions.retrieve(
             req.body.sessionId,
             {
                 expand: ["line_items.data"],
             }
         );
-        console.log("Response content: ", session);
 
         if (session.payment_status !== "paid") {
             return res.status(400).json({ verified: false, error: "Payment unsuccessful" })
         }
 
         const line_items = session.line_items && session.line_items.data;
-        console.log(line_items);
 
         if (line_items) {
             const products = line_items.map((accessData) => {
@@ -97,7 +101,6 @@ async function verifyPayment(req, res) {
             if (isDuplicate) {
                 return res.status(400).json({ message: "Order already exists" })
             };
-
 
             const newOrder = {
                 customer: [

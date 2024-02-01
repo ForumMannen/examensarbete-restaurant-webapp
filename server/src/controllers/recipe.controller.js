@@ -1,5 +1,6 @@
 const { ModifierModel, ToppingModel, RecipeModel, DrinkModel, CategoryModel } = require("../models/recipe.model");
 
+//Get all data about "products", both for dashboardpanel and the public website
 async function getDashboardData(req, res) {
     try {
         let recipesFromDB = await RecipeModel.find();
@@ -50,6 +51,8 @@ async function getAllDrinks(req, res) {
     }
 }
 
+//This function is to add modifier
+//Will probably be removed as I use the middleware
 async function addModifier(req, res) {
     let { name } = req.body;
 
@@ -68,6 +71,8 @@ async function addModifier(req, res) {
     }
 }
 
+//This function is to add modifier
+//Will probably be removed as I use the middleware
 async function addTopping(req, res) {
     let { name } = req.body;
 
@@ -85,18 +90,23 @@ async function addTopping(req, res) {
     }
 }
 
+//Add a new recipe
 async function addRecipe(req, res) {
     const { name, toppings, category, price } = req.body;
     try {
+        //Check if there is a recipe with that name
         const recipeExists = await RecipeModel.findOne({ name });
         if (recipeExists) {
             return res.status(409).send("A recipe with that name already exists");
         }
 
+        //Extracting IDs
         const modifierIds = req.existingModifiers.map(modifier => modifier._id.toString());
+        const toppingIds = req.existingToppings.map(topping => topping._id);
+        const categoryId = req.existingCategories._id;
 
+        //Check for duplicates with the same ingredients
         const sortedModifiers = modifierIds.slice().sort((a, b) => a.localeCompare(b));
-
         const allRecipesModifiers = await RecipeModel.find({}, { _id: 0, modifiers: 1 });
 
         const recipeDuplicatesExist = allRecipesModifiers.some((recipe) => {
@@ -108,10 +118,7 @@ async function addRecipe(req, res) {
             return res.status(409).send("A recipe with that ingredients already exists");
         }
 
-        const toppingIds = req.existingToppings.map(topping => topping._id);
-
-        const categoryId = req.existingCategories._id;
-
+        //Create a new recipe
         const recipe = new RecipeModel({
             name,
             modifiers: modifierIds,
