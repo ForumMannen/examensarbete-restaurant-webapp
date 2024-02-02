@@ -1,83 +1,109 @@
-import { PropsWithChildren, createContext, useContext, useState, Dispatch, SetStateAction } from "react";
+import { PropsWithChildren, createContext, useContext, useState, Dispatch, SetStateAction, useEffect } from "react";
 interface Credentials {
-    email: string;
-    password: string;
+  email: string;
+  password: string;
 }
 
 interface AdminContext {
-    loginAdmin: boolean | null;
-    setLoginAdmin: Dispatch<SetStateAction<boolean | null>>;
-    fetchAdmin: (admin: Credentials) => Promise<string | void>;
-    logoutAdmin: () => Promise<string | void>;
+  isAdmin: Credentials | null;
+  setIsAdmin: Dispatch<SetStateAction<Credentials | null>>;
+  loginAdmin: (admin: Credentials) => Promise<string | void>;
+  logoutAdmin: () => Promise<string | void>;
+  authAdmin: () => void,
+  isLoading: boolean;
 }
 
 const AdminContext = createContext<AdminContext>({
-    loginAdmin: null,
-    setLoginAdmin: () => {},
-    fetchAdmin: async () => Promise.resolve(),
-    logoutAdmin: () => Promise.resolve(),
+  isAdmin: null,
+  setIsAdmin: () => { },
+  loginAdmin: async () => Promise.resolve(),
+  logoutAdmin: () => Promise.resolve(),
+  authAdmin: () => Promise.resolve(),
+  isLoading: false
 })
 
 export const useAdminContext = () => useContext(AdminContext);
 
 const AdminProvider = ({ children }: PropsWithChildren<object>) => {
-    const [loginAdmin, setLoginAdmin] = useState<boolean | null>(false);
+  const [isAdmin, setIsAdmin] = useState<Credentials | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-    async function fetchAdmin(admin: Credentials): Promise<void> {
-        try {
-            const response = await fetch("/api/admin/login", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(admin),
-            })
-            
-            console.log(response);
+  async function loginAdmin(admin: Credentials): Promise<void> {
+    setIsLoading(true);
+    try {
+      const response = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(admin),
+      })
 
-            if(response.ok){
-              // const data = await response.json();
-              console.log("Login success");
-                setLoginAdmin(true);
-            } else {
-              console.log("Login failed");
-                setLoginAdmin(false);
-            }
-          } catch (error) {
-            console.error("Error: ", error)
-            setLoginAdmin(false);
-          }
-    }
-
-    async function logoutAdmin(){
-      try {
-        console.log("Logout function");
-        
-        const response = await fetch("/api/admin/logout", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          }, 
-          body: JSON.stringify({}),
-        });
-
-        if(response.status === 200){
-          setLoginAdmin(false);
-        } else {
-          const data = await response.json();
-          return data
-        }
-      } catch (error) {
-        console.log(error);
-        
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Login success");
+        setIsAdmin(data);
+      } else {
+        console.log("Login failed");
+        setIsAdmin(null);
       }
+    } catch (error) {
+      console.error("Error: ", error)
+      setIsAdmin(null);
+    } finally {
+      setIsLoading(false);
     }
+  }
 
-    return (
-        <AdminContext.Provider value={{ loginAdmin, setLoginAdmin, fetchAdmin, logoutAdmin }}>
-            {children}
-        </AdminContext.Provider>
-    )
+  async function logoutAdmin() {
+    try {
+      console.log("Logout function");
+
+      const response = await fetch("/api/admin/logout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+
+      if (response.status === 204) {
+        setIsAdmin(null);
+      } else {
+        const data = await response.json();
+        return data
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function authAdmin() {
+    try {
+      const response = await fetch("/api/admin/seeSecret");
+      if (response.status === 200) {
+        console.log("Tillbaka till frontend!");
+
+        const data = await response.json();
+        setIsAdmin(data);
+      } else {
+        setIsAdmin(null);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    console.log(isAdmin);
+
+  }, [isAdmin])
+
+  return (
+    <AdminContext.Provider value={{ isAdmin, setIsAdmin, loginAdmin, logoutAdmin, authAdmin, isLoading }}>
+      {children}
+    </AdminContext.Provider>
+  )
 }
 
 export default AdminProvider;
