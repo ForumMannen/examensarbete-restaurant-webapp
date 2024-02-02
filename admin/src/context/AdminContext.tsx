@@ -80,8 +80,10 @@ const AdminProvider = ({ children }: PropsWithChildren<object>) => {
 
   async function authAdmin() {
     try {
-      const response = await fetch("/api/admin/auth");
+      const response = await fetch("/api/admin/seeSecret");
       if (response.status === 200) {
+        console.log("Tillbaka till frontend!");
+
         const data = await response.json();
         setIsAdmin(data);
       } else {

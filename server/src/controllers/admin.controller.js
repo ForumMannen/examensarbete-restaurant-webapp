@@ -45,22 +45,6 @@ async function login(req, res) {
     res.status(200).send(admin);
 }
 
-// async function logout(req, res) {
-//     if (req.session) {
-//         await req.session.destroy((err) => {
-//             if (err) {
-//                 console.error('Error destroying session:', err);
-//                 res.status(500).send('Error logging out');
-//             } else {
-//                 res.clearCookie('connect.sid');
-//                 res.sendStatus(200);
-//             }
-//         });
-//     } else {
-//         res.sendStatus(200);
-//     }
-// }
-
 async function logout(req, res) {
     console.log("Logout");
     if (!req.session._id) {
@@ -71,7 +55,7 @@ async function logout(req, res) {
 }
 
 async function seeSecret(req, res) {
-    res.status(200).send();
+    res.status(200).send(req.session);
 }
 
 module.exports = { register, login, logout, seeSecret };

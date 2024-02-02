@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   BarChartOutlined,
   CoffeeOutlined,
@@ -30,7 +30,7 @@ const NavItems = ["Recept", "Ingredienser", "Drycker", "Orders", "Payments", "Us
 
 const Dashboard: React.FC = () => {
   const [selectedNavItem, setSelectedNavItem] = useState<string>(NavItems[0]);
-  const { logoutAdmin, isAdmin } = useAdminContext();
+  const { logoutAdmin, isAdmin, authAdmin } = useAdminContext();
   const { dashboardData } = useDashboardData();
   const { recipes, modifiers, toppings, drinks } = dashboardData;
   const {
@@ -40,6 +40,10 @@ const Dashboard: React.FC = () => {
   const handleNavItemClick = (item: string) => {
     setSelectedNavItem(item);
   }
+
+  useEffect(() => {
+    authAdmin();
+  }, [])
 
   const getPageComponent = (selected: string) => {
     switch (selected) {

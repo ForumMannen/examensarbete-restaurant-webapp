@@ -3,15 +3,15 @@ import { useAdminContext } from "../context/AdminContext";
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const { loginAdmin, isAdmin } = useAdminContext();
+  const { loginAdmin, isAdmin, authAdmin } = useAdminContext();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [login, setLogin] = useState(false);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   authAdmin();
-  // }, [])
+  useEffect(() => {
+    authAdmin();
+  }, [])
 
   //If already logged in redirect to dashboard
   useEffect(() => {
