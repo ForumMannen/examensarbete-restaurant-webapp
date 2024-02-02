@@ -3,20 +3,21 @@ import AdminProvider from "./context/AdminContext";
 import Login from "./components/Login";
 import Dashboard from "./pages/Dashboard";
 
-function App() {  
-    return (
-      <>
-        <BrowserRouter>
-          <AdminProvider>
-            <Routes>
-              <Route path="/" element={<Login />}/>
-              <Route path="/dashboard" element={<Dashboard />}/>
-            </Routes>
-          </AdminProvider>
-        </BrowserRouter>
-      </>
-    )
-  }
+function App() {
+
+  return (
+    <>
+      <BrowserRouter>
+        <AdminProvider>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </AdminProvider>
+      </BrowserRouter>
+    </>
+  )
+}
 export default App
 
 

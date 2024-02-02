@@ -8,8 +8,8 @@ import {
   SettingOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Layout, Menu, theme } from 'antd';
-// import { useAdminContext } from "../context/AdminContext";
+import { Layout, Menu, theme, Result, Button } from 'antd';
+import { useAdminContext } from "../context/AdminContext";
 
 //Import Pages within the Dashboard
 import RecipesPage from './Dashboard-pages/RecipesPage';
@@ -30,7 +30,7 @@ const NavItems = ["Recept", "Ingredienser", "Drycker", "Orders", "Payments", "Us
 
 const Dashboard: React.FC = () => {
   const [selectedNavItem, setSelectedNavItem] = useState<string>(NavItems[0]);
-  // const { logoutAdmin } = useAdminContext();
+  const { logoutAdmin, isAdmin } = useAdminContext();
   const { dashboardData } = useDashboardData();
   const { recipes, modifiers, toppings, drinks } = dashboardData;
   const {
@@ -77,6 +77,30 @@ const Dashboard: React.FC = () => {
     onClick: () => handleNavItemClick(NavItems[index]),
   }));
 
+  if (!isAdmin) {
+    return (
+      <Result
+        status="403"
+        title="403"
+        subTitle="Du behöver logga in för att få tillgång till denna sidan!"
+        extra={
+          <Button href='/login' type='primary' ghost>
+            Logga in
+          </Button>
+        }
+      />
+    )
+  }
+
+  const handleLogout = () => {
+    try {
+      logoutAdmin();
+      window.location.href = "/login";
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <Layout hasSider>
       <Sider
@@ -93,7 +117,7 @@ const Dashboard: React.FC = () => {
               cursor: 'pointer',
               fontSize: '16px',
             }}
-          // onClick={logoutAdmin}
+            onClick={handleLogout}
           >
             Logout
           </button>
@@ -118,28 +142,5 @@ const Dashboard: React.FC = () => {
     </Layout>
   );
 };
-
-// import { useNavigate } from "react-router-dom";
-// import { useAdminContext } from "../context/AdminContext";
-
-// function Dashboard() {
-//   const { logoutAdmin } = useAdminContext();
-//   const navigate = useNavigate();
-
-//   const handleLogout = async () => {
-//     try {
-//       await logoutAdmin();
-//       navigate("/");
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   }
-
-//   return (
-//     <div>
-//       <button onClick={handleLogout}>Logga ut!</button>
-//     </div>
-//   )
-// }
 
 export default Dashboard
