@@ -1,0 +1,11 @@
+footer {
+    display: flex;
+    justify-content: center;
+    height: 2em;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    color: rgba(61,64,91,1);
+    background: linear-gradient(90deg, rgba(61,64,91,1) 0%, rgba(129,178,154,1) 34%, rgba(242,204,143,1) 100%);
+}

@@ -17,7 +17,7 @@ const Home: React.FC = () => {
     }
     sortRecipesByCategory[recipe.category].push(recipe);
   });
-  
+
   const handleAddToCart = (recipe: IRecipesData) => {
     const cartItem = {
       productName: recipe.name,
@@ -29,20 +29,20 @@ const Home: React.FC = () => {
   }
 
   const categoryTables = Object.keys(sortRecipesByCategory).map((category: string) => (
-    <div key={category}>
+    <div className="menus" key={category}>
       <h2>{category}</h2>
       <div className="table">
         {sortRecipesByCategory[category].map((recipe, index) => (
           <article className="product-card" key={index}>
-            <div  
-            className="product-info"
-            onClick={() => handleAddToCart(recipe)}>
+            <div
+              className="product-info"
+              onClick={() => handleAddToCart(recipe)}>
               <p className="product-title">{recipe.name}</p>
-              <div className="product-modifiers">
+              {/* <div className="product-modifiers">
                 {recipe.modifiers.map((modifier, modifierIndex) => (
                   <p key={modifierIndex}>{modifier.name}</p>
                 ))}
-              </div>
+              </div> */}
               <p className="product-price">{recipe.price} kr</p>
             </div>
           </article>

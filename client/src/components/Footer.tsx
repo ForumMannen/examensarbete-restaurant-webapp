@@ -1,6 +1,6 @@
 function Footer() {
   return (
-    <div>Footer</div>
+    <footer>Some random footer text</footer>
   )
 }
 

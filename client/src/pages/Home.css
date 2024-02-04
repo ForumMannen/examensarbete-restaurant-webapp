@@ -1,3 +1,12 @@
+.menus {
+    margin-top: 1.5em;
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 1em;
+}
+
 .table {
     width: 100%;
     height: auto;
@@ -5,31 +14,30 @@
 
 article {
     width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .product-info {
-    width: 100%;
+    width: 80%;
     display: grid;
-    grid-template-columns: 20% 50% 10% 20%;
+    grid-template-columns: 20% 70% 10%;
     padding: 1rem;
+    border-radius: 1em;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+.product-info:hover {
+    cursor: pointer;
+    background: linear-gradient(90deg, rgba(242,204,143,1) 0%, rgba(129,178,154,1) 66%, rgba(61,64,91,1) 100%);
 }
 
 .product-title {
     grid-column: 1;
 }
 
-.product-ingredients {
-    grid-column: 2;
-}
-
 .product-price   {
     grid-column: 3;
-}
-
-.add-to-cart {
-    grid-column: 4;
-    border-radius: 1rem;
-    border: none;
 }
 
 @media screen and (max-width: 500px) {
@@ -51,10 +59,5 @@ article {
     .product-price {
         grid-column: 1;
         grid-row: 3;
-    }
-
-    .add-to-cart {
-        grid-column: 2;
-        grid-row: 2;
     }
 }

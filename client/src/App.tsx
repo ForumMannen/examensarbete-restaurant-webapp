@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.css";
 import Home from "./pages/Home";
 import Kontakt from "./pages/Kontakt";
 import Header from "./components/Header";
@@ -15,8 +16,8 @@ function App() {
         <Main>
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/kontakt" element={<Kontakt />}/>
-            <Route path="/kundvagn" element={<Cart />}/>
+            <Route path="/kontakt" element={<Kontakt />} />
+            <Route path="/kundvagn" element={<Cart />} />
             <Route path="/success" element={<PaymentSuccessPage />} />
           </Routes>
         </Main>
