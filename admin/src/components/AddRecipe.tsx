@@ -99,7 +99,6 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories }) => {
       toppings: recipeData.toppings.map(topping => ({ name: topping.name })),
       category: categoryInput?.trim() ? categoryInput : recipeData.category,
     }
-    console.log({ modifiedData });
 
     addRecipeToDB(modifiedData);
   };

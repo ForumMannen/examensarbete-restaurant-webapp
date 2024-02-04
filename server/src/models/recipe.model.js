@@ -3,58 +3,63 @@ const Joi = require("joi");
 
 
 // MODIFIER
+//Defining the schema
 const ModifiersSchema = new Schema({
-    // id: { type: String, required: true },
     name: { type: String, required: true },
 })
 
+//Creating the Model from the schema
 const ModifierModel = models.modifier || model("modifiers", ModifiersSchema);
 
+//Joi schema to validate incoming data from body
 const ModifierCreateValidationSchema = Joi.object({
-    // id: Joi.string().required(),
     name: Joi.string().required(),
 })
 
 
 // TOPPING
-
+//Defining the schema
 const ToppingsSchema = new Schema({
-    // id: { type: String, required: true },
     name: { type: String, required: false }
 })
 
+//Creating the Model from the schema
 const ToppingModel = models.topping || model("toppings", ToppingsSchema)
 
+//Joi schema to validate incoming data from body
 const ToppingCreateValidationSchema = Joi.object({
-    // id: Joi.string().required(),
     name: Joi.string().optional(),
 })
 
+//CATEGORY
+//Defining the schema
 const CategorySchema = new Schema({
     name: { type: String, required: true },
 })
 
+//Creating the Model from the schema
 const CategoryModel = models.category || model("categories", CategorySchema);
 
+//Joi schema to validate incoming data from body
 const CategoryCreateValidationSchema = Joi.object({
     name: Joi.string().required(),
 })
 
 
 // RECIPE
-
+//Defining the schema
 const RecipesSchema = new Schema({
     name: { type: String, required: true },
     modifiers: [String],
     toppings: [String],
-    // modifiers: [{ type: Schema.Types.ObjectId, ref: 'Modifier' }],
-    // toppings: [{ type: Schema.Types.ObjectId, ref: 'Topping' }],
     category: { type: String, required: true },
     price: { type: Number, required: true },
 })
 
+//Creating the Model from the schema
 const RecipeModel = models.recipe || model("recipes", RecipesSchema);
 
+//Joi schema to validate incoming data from body
 const RecipeCreateValidationSchema = Joi.object({
     name: Joi.string().required(),
     modifiers: Joi.array().items(Joi.object({
@@ -70,7 +75,7 @@ const RecipeCreateValidationSchema = Joi.object({
 
 
 // DRINKS
-
+//Defining the schema
 const DrinkSchema = new Schema({
     name: { type: String, required: true },
     volume: { type: Number, required: true },
@@ -78,8 +83,10 @@ const DrinkSchema = new Schema({
     price: { type: Number, required: true }
 })
 
+//Creating the Model from the schema
 const DrinkModel = models.drink || model("drinks", DrinkSchema);
 
+//Joi schema to validate incoming data from body
 const DrinkCreateValidationSchema = Joi.object({
     name: Joi.string().required(),
     volume: Joi.number().required(),

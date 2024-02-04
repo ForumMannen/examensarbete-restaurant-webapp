@@ -4,6 +4,7 @@ const { ModifierCreateValidationSchema, ToppingCreateValidationSchema, RecipeCre
 const { validate, createModifier, createTopping, deleteItem, createCategory, updateItem } = require("../middlewares");
 const { RecipeModel, ToppingModel, DrinkModel, ModifierModel } = require("../models/recipe.model");
 
+//All routes and their controller functions, middlewares and validation schemas for recipes, modifiers, toppings, drinks
 const recipeRouter = express
     .Router()
     .get("/", getDashboardData)

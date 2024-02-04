@@ -1,7 +1,7 @@
-function Kontakt() {
+function Contact() {
   return (
     <div>Kontaktsidan kommer att bli här</div>
   )
 }
 
-export default Kontakt
+export default Contact

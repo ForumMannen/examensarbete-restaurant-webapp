@@ -1,6 +1,8 @@
 const { Schema, model, models } = require("mongoose");
 const Joi = require("joi");
 
+//ORDERITEM
+//Defining the schema
 const OrderItemSchema = new Schema(
     {
         product: { type: String, required: true },
@@ -9,6 +11,8 @@ const OrderItemSchema = new Schema(
     }
 )
 
+//CUSTOMER
+//Defining the schema
 const CustomerSchema = new Schema(
     {
         email: { type: String, required: true },
@@ -16,6 +20,8 @@ const CustomerSchema = new Schema(
     }
 )
 
+//ORDER
+//Defining the schema
 const OrderSchema = new Schema(
     {
         customer: [CustomerSchema],
@@ -30,8 +36,10 @@ const OrderSchema = new Schema(
     }
 )
 
+//Creating the Model from the OrderSchema
 const OrderModel = models.order || model("order", OrderSchema);
 
+//Joi schema to validate incoming data from body
 const OrderCreateValidationSchema = Joi.object({
     customer: Joi.array()
         .items(

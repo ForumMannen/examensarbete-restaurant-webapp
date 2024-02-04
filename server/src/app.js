@@ -2,7 +2,10 @@ const express = require("express");
 const cookieSession = require("cookie-session");
 const app = express();
 
+//Parse JSON bodies of incoming requests
 app.use(express.json());
+
+//Session management
 app.use(
     cookieSession({
         name: "session",
@@ -10,11 +13,6 @@ app.use(
         maxAge: 6 * 60 * 60 * 1000,
         sameSite: "strict",
         httpOnly: true,
-        // resave: false,
-        // saveUninitialized: true,
-        // // Set to HTTPS if it's live
-        // cookie: { secure: false },
-        // credentials: true,
     })
 )
 
@@ -23,7 +21,7 @@ const { adminRouter } = require("./routes/admin.route");
 const { recipeRouter } = require("./routes/recipe.route");
 const { orderRouter } = require("./routes/order.route");
 
-//Add routers
+//Add routers and their paths
 app.use("/api/admin", adminRouter);
 app.use("/api/dashboard", recipeRouter);
 app.use("/api/order", orderRouter);
