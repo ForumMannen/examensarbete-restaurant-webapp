@@ -13,8 +13,10 @@ Client (public webpage) | Admin(admin interface) | Server(API)
 ## Build and start the project
 Add a .env file in the server root file.
 What it has to include:
+```
 MONGODB_CONNECTION_STRING
 STRIPE_SECRET_KEY
+```
 
 ### Admin
 To start and run Adminpanel start server within terminal.
@@ -49,3 +51,7 @@ $ cd client
 $ npm install
 $ npm run dev
 ```
+
+The frontend applications Admin & Client is both built with Vite React App (TypeScript).
+And the backend server is built with Node v.20.19.0
+For all the dependencies this project is built with, check the package.json in each folder Admin/Client/Server.
