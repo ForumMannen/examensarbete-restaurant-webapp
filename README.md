@@ -42,7 +42,7 @@ Server:
 ```
 $ cd server
 $ npm install
-$ npm install
+$ npm start
 ```
 
 Client Webpage:
