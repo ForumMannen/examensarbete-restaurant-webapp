@@ -4,6 +4,7 @@ const { ModifierModel, ToppingModel, CategoryModel } = require("./models/recipe.
 function validate(joiSchema) {
     return (req, res, next) => {
         const validation = joiSchema.validate(req.body);
+        console.log({ validation });
         if (!validation.error) return next();
         res.status(400).json(validation.error.message);
     }
@@ -12,6 +13,7 @@ function validate(joiSchema) {
 // Function that create new modifiers if there is no in the database with that name
 async function createModifier(req, res, next) {
     const { modifiers } = req.body;
+    console.log(modifiers);
     try {
         const existingModifiers = await Promise.all(
             modifiers.map(async (modifier) => {
@@ -39,26 +41,22 @@ async function createModifier(req, res, next) {
 async function createTopping(req, res, next) {
     const { toppings } = req.body;
     try {
-        if (Array.isArray(toppings)) {
-            const existingToppings = await Promise.all(
-                toppings.map(async (topping) => {
-                    const existingTopping = await ToppingModel.findOne({ name: topping });
-                    if (!existingTopping) {
-                        const newTopping = new ToppingModel({ name: topping });
-                        await newTopping.save();
-                        return newTopping
-                    }
-                    return existingTopping;
-                })
-            );
-            //Storing existing toppings to be able to use them in my controllers
-            req.existingToppings = existingToppings;
-        } else {
-            req.existingToppings = [];
-        }
+        const existingToppings = await Promise.all(
+            toppings.map(async (topping) => {
+                const existingTopping = await ToppingModel.findOne({ name: topping.name });
+                if (!existingTopping) {
+                    const newTopping = new ToppingModel({ name: topping.name });
+                    await newTopping.save();
+                    return newTopping
+                }
+                return existingTopping;
+            })
+        );
+        //Storing existing toppings to be able to use them in my controllers
+        req.existingToppings = existingToppings;
         next();
     } catch (error) {
-        console.error("Error adding new modifiers: ", error);
+        console.error("Error adding new toppings: ", error);
         res.status(500).json({ message: "Internal server error" });
     }
 }

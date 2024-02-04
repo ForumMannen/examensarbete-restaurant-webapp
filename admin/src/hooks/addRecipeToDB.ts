@@ -8,6 +8,8 @@ export interface Recipe{
 }
 
 export const addRecipeToDB = async (recipe: Recipe) => {
+    console.log({recipe});
+    
     try {
         const response = await fetch("/api/dashboard/recipe", {
             method: "POST",

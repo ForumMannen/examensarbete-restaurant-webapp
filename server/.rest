@@ -51,20 +51,20 @@ POST http://localhost:3000/api/dashboard/toppings
 Content-Type: application/json
 
 {
-    "name": "Kantarell"
+    "name": "Pommes"
 }
 
 ###
 
-//Lägg till toppings(sås, topping etc)
+//Lägg till nya recept
 POST http://localhost:3000/api/dashboard/recipe
 Content-Type: application/json
 
 {
-    "name": "Bolognese",
-    "modifiers": ["Köttfärssås"],
+    "name": "Margherita",
+    "modifiers": [{ "name": "Tomatsås", "name": "Ost"}],
     "toppings": [],
-    "category": "Pizza 2",
+    "category": "Pizza 1",
     "price": 95
 }
 
@@ -75,9 +75,9 @@ POST http://localhost:3000/api/dashboard/drinks
 Content-Type: application/json
 
 {
-    "name": "Coca-Cola",
+    "name": "Sprite",
     "volume": 0.33,
-    "description": "Original taste",
+    "description": "Citron- och limesmak",
     "price": 20
 }
 
