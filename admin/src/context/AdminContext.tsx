@@ -1,4 +1,4 @@
-import { PropsWithChildren, createContext, useContext, useState, Dispatch, SetStateAction, useEffect } from "react";
+import { PropsWithChildren, createContext, useContext, useState, Dispatch, SetStateAction } from "react";
 interface Credentials {
   email: string;
   password: string;
@@ -57,8 +57,6 @@ const AdminProvider = ({ children }: PropsWithChildren<object>) => {
 
   async function logoutAdmin() {
     try {
-      console.log("Logout function");
-
       const response = await fetch("/api/admin/logout", {
         method: "POST",
         headers: {
@@ -82,8 +80,6 @@ const AdminProvider = ({ children }: PropsWithChildren<object>) => {
     try {
       const response = await fetch("/api/admin/seeSecret");
       if (response.status === 200) {
-        console.log("Tillbaka till frontend!");
-
         const data = await response.json();
         setIsAdmin(data);
       } else {
@@ -93,11 +89,6 @@ const AdminProvider = ({ children }: PropsWithChildren<object>) => {
       console.error(error);
     }
   }
-
-  useEffect(() => {
-    console.log(isAdmin);
-
-  }, [isAdmin])
 
   return (
     <AdminContext.Provider value={{ isAdmin, setIsAdmin, loginAdmin, logoutAdmin, authAdmin, isLoading }}>

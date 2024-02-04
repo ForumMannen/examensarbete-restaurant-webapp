@@ -15,7 +15,6 @@ export interface IRecipesData {
     toppings: string[];
     category: string;
     price: number;
-    // [key: string]: string | number | IModifiersData[] | IRecipesData[];
 }
 
 export interface IModifiersData {
@@ -29,6 +28,7 @@ export interface IToppingsData {
 }
 
 export interface ICategoriesData {
+    _id?: string;
     name: string;
 }
 
@@ -81,7 +81,6 @@ export const useDashboardData = () => {
                     categories: data.categoriesFromDB
                 }));
             }
-            // console.log("The hook: ", data.modifiersFromDB)
         } catch (error) {
             if(error){
                console.error(error); 

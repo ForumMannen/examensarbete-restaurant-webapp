@@ -38,17 +38,6 @@ const AddRecipe: React.FC<AddRecipeProps> = ({ categories }) => {
     category: '',
     price: 0,
   });
-  // const { dashboardData } = useDashboardData();
-  // const { categories } = dashboardData;
-
-  // const [categories, setCategories] = useState<string[]>([]);
-
-  // useEffect(() => {
-  //     const allCategories = [
-  //       ...new Set(propCategories),
-  //     ];
-  //     setCategories(allCategories);
-  // }, [propCategories]); 
 
   const handleRemoveModifierField = (name: string) => {
     setRecipeData((prevData) => ({
