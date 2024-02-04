@@ -121,7 +121,8 @@ const updateItem = (Model) => async (req, res) => {
 
 //Check if user is logged in by checking if there is a user session
 function isLoggedIn(req, res, next) {
-    if (!req.session._id) return res.status(401).send();
+    if (!req.session._id) return res.status(401).send("Not logged in!");
+    console.log("Is logged in!");
     return next();
 }
 

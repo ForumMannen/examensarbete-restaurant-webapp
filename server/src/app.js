@@ -1,7 +1,5 @@
 const express = require("express");
-const session = require("express-session");
-
-//Creating an Express application instance
+const cookieSession = require("cookie-session");
 const app = express();
 
 //Parse JSON bodies of incoming requests
@@ -9,13 +7,17 @@ app.use(express.json());
 
 //Session management
 app.use(
-    session({
-        secret: "VeryS3cr3t",
-        resave: false,
-        saveUninitialized: true,
-        // Set to true for HTTPS if it's live
-        cookie: { secure: false },
-        credentials: true,
+    cookieSession({
+        name: "session",
+        keys: ["VeryS3cr3t"],
+        maxAge: 6 * 60 * 60 * 1000,
+        sameSite: "strict",
+        httpOnly: true,
+        // resave: false,
+        // saveUninitialized: true,
+        // // Set to HTTPS if it's live
+        // cookie: { secure: false },
+        // credentials: true,
     })
 )
 
