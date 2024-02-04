@@ -20,24 +20,32 @@ STRIPE_SECRET_KEY
 To start and run Adminpanel start server within terminal.
 
 Server:
+```
 $ cd server
 $ npm install
 $ npm start
+```
 
 Admin Interface:
+```
 $ cd admin
 $ npm install
 $ npm run dev
+```
 
 ### Client
 To start "public" client website
 
 Server:
+```
 $ cd server
 $ npm install
 $ npm install
+```
 
 Client Webpage:
+```
 $ cd client
 $ npm install
 $ npm run dev
+```
