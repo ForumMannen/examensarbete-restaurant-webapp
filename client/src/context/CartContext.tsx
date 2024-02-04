@@ -22,7 +22,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const useCartContext = (): CartContextType => {
     const context = useContext(CartContext);
-    if(!context){
+    if (!context) {
         throw new Error('useCartContext must be used within a CartProvider')
     }
     return context;
@@ -34,18 +34,18 @@ const cartReducer = (state: CartState, action: CartAction) => {
             const existingCartItemIndex = state.items.findIndex(
                 (item) => item.productName === action.payload.productName
             );
-        
+
             if (existingCartItemIndex !== -1) {
                 const updatedItems = state.items.map((item, index) =>
                     index === existingCartItemIndex
                         ? {
-                              ...item,
-                              quantity: item.quantity + action.payload.quantity,
-                              total: action.payload.price * (item.quantity + action.payload.quantity),
-                          }
+                            ...item,
+                            quantity: item.quantity + action.payload.quantity,
+                            total: action.payload.price * (item.quantity + action.payload.quantity),
+                        }
                         : item
                 );
-        
+
                 return {
                     ...state,
                     items: updatedItems,
@@ -55,7 +55,7 @@ const cartReducer = (state: CartState, action: CartAction) => {
                     ...action.payload,
                     total: action.payload.price * action.payload.quantity,
                 };
-        
+
                 return {
                     ...state,
                     items: [...state.items, newItem],

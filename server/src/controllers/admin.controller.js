@@ -46,10 +46,11 @@ async function login(req, res) {
 }
 
 async function logout(req, res) {
-    console.log("Logout");
+    //Check if there is a cookie session
     if (!req.session._id) {
         return res.status(400).json("Cannot logout when you are not logged in");
     }
+    //Delete cookie session
     req.session = null;
     res.status(204).json(null);
 }

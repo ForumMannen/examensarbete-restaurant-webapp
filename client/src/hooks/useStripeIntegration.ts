@@ -1,8 +1,11 @@
+// import { CartItem } from "../context/CartContext";
+
 const useStripeIntegration = () => {
 
     const handlePayment = async (orderData: any) => {
         const cartItems = orderData;
-        console.log("handlePayment", cartItems)
+        console.log(cartItems);
+        
         
         const response = await fetch("api/order/create-checkout-session", {
             method: "POST",
@@ -19,7 +22,6 @@ const useStripeIntegration = () => {
         try {
             const responseData = await response.json();
             const { url, sessionId } = responseData;
-            console.log("Is there a sessionID? ", { url, sessionId });
             sessionStorage.setItem("session-id", sessionId);
             window.location = url;
         } catch (error) {

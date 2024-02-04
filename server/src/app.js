@@ -13,11 +13,6 @@ app.use(
         maxAge: 6 * 60 * 60 * 1000,
         sameSite: "strict",
         httpOnly: true,
-        // resave: false,
-        // saveUninitialized: true,
-        // // Set to HTTPS if it's live
-        // cookie: { secure: false },
-        // credentials: true,
     })
 )
 

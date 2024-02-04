@@ -15,8 +15,6 @@ function Login() {
 
   //If already logged in redirect to dashboard
   useEffect(() => {
-    console.log(isAdmin);
-
     if (isAdmin) {
       navigate("/dashboard");
     }

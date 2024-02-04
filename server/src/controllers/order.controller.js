@@ -28,7 +28,9 @@ async function createCheckoutSession(req, res) {
         const cartItems = Array.isArray(req.body.cartItems.items)
             ? req.body.cartItems.items
             : [];
-
+        console.log({ cartItems });
+        // const cartItems = req.body.cartItems;
+        console.log({ cartItems })
         const priceList = await Promise.all(
             cartItems.map(async (item) => {
                 try {
@@ -111,7 +113,7 @@ async function verifyPayment(req, res) {
                 ],
                 orderItems: products,
                 paymentStatus: session.payment_status,
-                createdAt: new Date().toISOString(),
+                createdAt: new Date(),
                 sessionId: session.id,
                 totalPrice: session.amount_total / 100,
             };

@@ -9,8 +9,6 @@ export interface Recipe{
 
 export const addRecipeToDB = async (recipe: Recipe) => {
     try {
-        console.log("AddRecipeToDBHook: ", recipe);
-        
         const response = await fetch("/api/dashboard/recipe", {
             method: "POST",
             headers: {
@@ -24,9 +22,6 @@ export const addRecipeToDB = async (recipe: Recipe) => {
         } else {
             console.log("It failed!");
         }
-
-        console.log(response);
-        
     } catch (error) {
         console.error("Error: ", error);
     }

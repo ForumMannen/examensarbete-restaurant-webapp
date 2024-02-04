@@ -19,7 +19,6 @@ export const fetchOrdersData = async (): Promise<IOrder[]> => {
     try {
         const response = await fetch("/api/order/get-orders");
         const { ordersFromDB } = await response.json();
-        console.log("Fetched!!!!!", ordersFromDB);
         
         return ordersFromDB;
     } catch (error) {
@@ -42,11 +41,6 @@ export const useOrdersData = () => {
         };
         fetchData();
     }, []);
-
-    useEffect(() => {
-        console.log("Within the hook: ", orderData);
-        
-    }, [orderData])
 
     return { orderData };
 }

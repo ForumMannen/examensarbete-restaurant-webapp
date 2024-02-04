@@ -3,21 +3,13 @@ import useStripeIntegration from "../hooks/useStripeIntegration";
 
 function PaymentSuccessPage() {
     const { verifyPayment } = useStripeIntegration();
-    // const [verificationAttempted, setVerificationAttempted] = useState(false);
     const verificationAttemptedRef = useRef(false);
 
     useEffect(() => {
         const sessionId: string | null = sessionStorage.getItem("session-id");
-        console.log(verificationAttemptedRef);
-        
-
-        if(sessionId !== null && !verificationAttemptedRef.current){
-            console.log("Den kommer inte ens hit?")
-
+        if (sessionId !== null && !verificationAttemptedRef.current) {
             const handleVerification = async () => {
                 try {
-                    console.log("Attempting payment verification");
-                    
                     await verifyPayment(sessionId);
                     console.log("Payment verification successful");
                 } catch (error) {
@@ -34,9 +26,9 @@ function PaymentSuccessPage() {
         }
     }, [verifyPayment]);
 
-  return (
-    <div>PaymentSuccessPage</div>
-  )
+    return (
+        <div>PaymentSuccessPage</div>
+    )
 }
 
 export default PaymentSuccessPage
