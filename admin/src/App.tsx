@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AdminProvider from "./context/AdminContext";
 import Login from "./components/Login";
 import Dashboard from "./pages/Dashboard";
@@ -10,6 +10,7 @@ function App() {
       <BrowserRouter>
         <AdminProvider>
           <Routes>
+            <Route path="/" element={<Navigate to="/login" />} />
             <Route path="/login" element={<Login />} />
             <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
@@ -19,14 +20,3 @@ function App() {
   )
 }
 export default App
-
-
-
-
-
-
-// function getCookie(key: string) {
-//   const b = document.cookie.match("(^|;)\\s*" + key + "\\s*=\\s*([^;]+)");
-
-//   return b ? b.pop() : '';
-// }
